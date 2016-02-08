@@ -9,10 +9,10 @@ const lower = VoronoiDelaunay.min_coord
 const upper = VoronoiDelaunay.max_coord
 
 # Corners of the bounding box
-const lowerleft  = Point2D( VoronoiDelaunay.min_coord, VoronoiDelaunay.min_coord )
-const lowerright = Point2D( VoronoiDelaunay.max_coord, VoronoiDelaunay.min_coord )
-const upperright = Point2D( VoronoiDelaunay.max_coord, VoronoiDelaunay.max_coord )
-const upperleft  = Point2D( VoronoiDelaunay.min_coord, VoronoiDelaunay.max_coord )
+const lowerleft  = Point2D( left, lower )
+const lowerright = Point2D( right, lower )
+const upperright = Point2D( right, upper )
+const upperleft  = Point2D( left, upper )
 
 
 function Base.show(io::IO, C::VoronoiCorners)
@@ -88,6 +88,30 @@ function newcorner!(corners::VoronoiCorners, generator::Point2D, corner::Point2D
 end
 
 @doc """
+	newedge!(corners::VoronoiCorners, edge::VoronoiEdge)
+
+Update `corners` with the corners of `edge`. See also `newcorner!`.
+"""->
+function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{GeometricalPredicates.Point2D})
+	# TODO: Import edge type?
+
+	# Make sure edge is inside the bounding box
+	A = geta(edge)
+	B = getb(edge)
+	if !isinside(A) || !isinside(B)
+		A, B = bounding_intersect(A, B)
+	end
+
+	generator = getgena(edge)
+	newcorner!(corners, generator, A)
+	newcorner!(corners, generator, B)
+
+	generator = getgenb(edge)
+	newcorner!(corners, generator, A)
+	newcorner!(corners, generator, B)
+end
+
+@doc """
 	corners(generators::Points2D) -> VoronoiCorners
 
 Collect the Voronoi cells from set of `generators`.
@@ -105,17 +129,7 @@ function corners(generators::Points2D)
 
 	for edge in voronoiedges(tess)
 		# TODO: Leave out the corners of the bounding box
-		generator = getgena(edge)
-		#= if !is_bounding_corner(generator) =#
-			newcorner!(corners, generator, geta(edge))
-			newcorner!(corners, generator, getb(edge))
-		#= end =#
-
-		generator = getgenb(edge)
-		#= if !is_bounding_corner(generator) =#
-			newcorner!(corners, generator, geta(edge))
-			newcorner!(corners, generator, getb(edge))
-		#= end =#
+		newedge!(corners, edge)
 	end
 
 	# TODO: Orientation of the polygons/cells
@@ -135,7 +149,7 @@ end
 @doc """
 	isvertical(gena::Point2D, genb::Point2D)
 
-Test if line segment with endpoints `gena` and `genb` is vertical.
+Test if a line segment with endpoints `gena` and `genb` is vertical.
 """->
 function isvertical(gena::Point2D, genb::Point2D)
 	isapprox( getx(gena), getx(genb) )
@@ -144,10 +158,50 @@ end
 @doc """
 	ishorizontal(gena::Point2D, genb::Point2D)
 
-Test if line segment with endpoints `gena` and `genb` is horizontal.
+Test if a line segment with endpoints `gena` and `genb` is horizontal.
 """->
 function ishorizontal(gena::Point2D, genb::Point2D)
 	isapprox( gety(gena), gety(genb) )
+end
+
+@doc """
+	bounding_intersect(edge::VoronoiEdge) -> Point2D
+
+Restrict a line segment to the bounding box.
+
+	bounding_intersect(gena::Point2D, genb::Point2D) -> Point2D
+
+Restrict a line segment with endpoints `gena` and `genb` to the bounding box.
+"""->
+function bounding_intersect(A::Point2D, B::Point2D)
+
+	while !isinside(A)
+		if getx(A) < left
+			edge = :left
+		elseif getx(A) > right
+			edge = :right
+		elseif gety(A) < lower
+			edge = :lower
+		elseif gety(A) > upper
+			edge = :upper
+		end
+		A = intersection(edge, A, B)
+	end
+
+	while !isinside(B)
+		if getx(B) < left
+			edge = :left
+		elseif getx(B) > right
+			edge = :right
+		elseif gety(B) < lower
+			edge = :lower
+		elseif gety(B) > upper
+			edge = :upper
+		end
+		B = intersection(edge, A, B)
+	end
+
+	return A, B
 end
 
 @doc """
