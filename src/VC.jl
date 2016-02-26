@@ -1,6 +1,17 @@
-typealias Points2D Array{VoronoiDelaunay.Point2D,1}
-# Hash table of Voronoi cells indexed by their generators
-typealias VoronoiCorners Dict{Point2D, Points2D}
+immutable IndexablePoint <: AbstractPoint2D
+    _x::Float64
+    _y::Float64
+    index::Int64
+end
+IndexablePoint(x::Float64,y::Float64) = IndexablePoint(x,y,-1)
+
+getx(p::IndexablePoint) = p._x
+gety(p::IndexablePoint) = p._y
+getindex(p::IndexablePoint) = p.index
+
+typealias IndexablePoints2D Array{IndexablePoint, 1}
+typealias Points2D Array{Point2D, 1}
+typealias VoronoiCorners Dict{Int, Points2D}
 
 # Edges of the bounding box
 const left = VoronoiDelaunay.min_coord
@@ -20,7 +31,8 @@ function Base.show(io::IO, C::VoronoiCorners)
 	println("---------------------")
 
 	for key in keys(C)
-		@printf(io, "(%2.2f,%2.2f)  ", getx(key), gety(key) )
+		#= @printf(io, "(%2.2f,%2.2f)  ", getx(key), gety(key) ) =#
+		@printf(io, "%u  ", key)
 
 		for corner in C[key]
 			@printf(io, "(%2.2f,%2.2f), ", getx(corner), gety(corner) )
@@ -54,45 +66,31 @@ function contains(p::Point2D, P::Points2D)
 end
 
 @doc """
-	contains(p::Point2D, C::VoronoiCorners) -> Bool, Point2D
-
-Test if `p` is a generator in `C`.
-"""->
-function contains(p::Point2D, C::VoronoiCorners)
-	for key in keys(C)
-		if isapprox(p, key)
-			return true, key
-		end
-	end
-	return false, p
-end
-
-@doc """
 	newcorner!(corners::VoronoiCorners, generator::Point2D, corner::Point2D)
 
 Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
 If `generator` is already in `VoronoiCorners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
 """->
-function newcorner!(corners::VoronoiCorners, generator::Point2D, corner::Point2D)
-	# TODO: Allocate VoronoiCorners with all keys and make this check
-	# obsolete
-	match, key = contains( generator, corners )
+function newcorner!(corners::VoronoiCorners, generator::IndexablePoint, corner::Point2D)
+	index = getindex(generator)
+	match = haskey( corners, index )
 
 	if match
-		if !contains(corner, corners[key])
-			push!( corners[key], corner )
+		if !contains(corner, corners[index])
+			push!( corners[index], corner )
 		end
 	else
-		corners[key] = [ corner ]
+		corners[index] = [ corner ]
 	end
 end
 
-@doc """
-	newedge!(corners::VoronoiCorners, edge::VoronoiEdge)
+#= @doc """ =#
+#= 	newedge!(corners::VoronoiCorners, edge::VoronoiEdge) =#
 
-Update `corners` with the corners of `edge`. See also `newcorner!`.
-"""->
-function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{GeometricalPredicates.Point2D})
+#= Update `corners` with the corners of `edge`. See also `newcorner!`. =#
+#= """-> =#
+function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint})
+	#= function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{GeometricalPredicates.Point2D}) =#
 	# TODO: Import edge type?
 
 	# Make sure edge is inside the bounding box
@@ -112,20 +110,30 @@ function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{Geo
 end
 
 @doc """
-	corners(generators::Points2D) -> VoronoiCorners
+	corners(generators::IndexablePoints2D) -> VoronoiCorners
 
 Collect the Voronoi cells from set of `generators`.
 """->
-function corners(generators::Points2D)
+function corners(generators::IndexablePoints2D)
 	Ngen = length(generators)
 
 	# VoronoiDelaunay data structure
-	tess = DelaunayTessellation(Ngen)
+	#= tess = DelaunayTessellation(Ngen) =#
+	tess = DelaunayTessellation2D{IndexablePoint}(Ngen)
 	push!(tess, generators)
 
 	# Initialize output
+	# TODO: In separate function
 	corners = VoronoiCorners()
 	sizehint!(corners, Ngen)
+	#= pts = Points2D() =#
+	#= for gen in generators =#
+	#= 	corners[gen] = pts =#
+	#= end =#
+	#= corners[lowerleft] = pts =#
+	#= corners[lowerright] = pts =#
+	#= corners[upperleft] = pts =#
+	#= corners[upperright] = pts =#
 
 	for edge in voronoiedges(tess)
 		# TODO: Leave out the corners of the bounding box
@@ -275,11 +283,11 @@ function line(gena::Point2D, genb::Point2D)
 end
 
 @doc """
-	isinside(corner::Point2D)
+	isinside(p::Point2D)
 
-Test if `corner` is inside the bounding box.
+Test if the point `p` is inside the bounding box.
 """->
-function isinside(corner::Point2D)
-	left <= getx(corner) <= right && lower <= gety(corner) <= upper
+function isinside(p::Point2D)
+	left <= getx(p) <= right && lower <= gety(p) <= upper
 end
 
