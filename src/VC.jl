@@ -9,6 +9,7 @@ getx(p::IndexablePoint) = p._x
 gety(p::IndexablePoint) = p._y
 getindex(p::IndexablePoint) = p.index
 
+typealias AbstractPoints2D Array{AbstractPoint2D, 1}
 typealias IndexablePoints2D Array{IndexablePoint, 1}
 typealias Points2D Array{Point2D, 1}
 typealias VoronoiCorners Dict{Int, Points2D}
@@ -47,7 +48,8 @@ end
 
 Test if the two points `a` and `b` are approximately equal in the `l1`-norm.
 """->
-function Base.isapprox(a::Point2D, b::Point2D)
+function Base.isapprox(a::AbstractPoint2D, b::AbstractPoint2D)
+#= function Base.isapprox(a::Point2D, b::Point2D) =#
 	isapprox(getx(a), getx(b)) && isapprox(gety(a), gety(b))
 end
 
@@ -73,9 +75,8 @@ If `generator` is already in `VoronoiCorners`, the entry in `corners` is updated
 """->
 function newcorner!(corners::VoronoiCorners, generator::IndexablePoint, corner::Point2D)
 	index = getindex(generator)
-	match = haskey( corners, index )
 
-	if match
+	if haskey( corners, index )
 		if !contains(corner, corners[index])
 			push!( corners[index], corner )
 		end
@@ -84,11 +85,11 @@ function newcorner!(corners::VoronoiCorners, generator::IndexablePoint, corner::
 	end
 end
 
-#= @doc """ =#
-#= 	newedge!(corners::VoronoiCorners, edge::VoronoiEdge) =#
+@doc """
+	newedge!(corners::VoronoiCorners, edge::VoronoiEdge)
 
-#= Update `corners` with the corners of `edge`. See also `newcorner!`. =#
-#= """-> =#
+Update `corners` with the corners of `edge`. See also `newcorner!`.
+"""->
 function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint})
 	#= function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{GeometricalPredicates.Point2D}) =#
 	# TODO: Import edge type?
@@ -279,11 +280,12 @@ function line(gena::Point2D, genb::Point2D)
 	ay = gety(gena)
 	slope = (ay - gety(genb)) / (ax - getx(genb))
 	intersect = ay - slope*ax
-	return (slope,intersect)
+
+	return slope, intersect
 end
 
 @doc """
-	isinside(p::Point2D)
+	isinside(p::Point2D) -> Bool
 
 Test if the point `p` is inside the bounding box.
 """->
