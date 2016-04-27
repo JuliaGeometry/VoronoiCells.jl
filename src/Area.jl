@@ -2,10 +2,11 @@
 	polyarea(p::AbstractPoints2D)
 
 Compute the area of the polygon with vertices `p` using the shoelace formula.
-The points in `p` must be sorted clockwise or counter-clockwise.
+
+If the points in `p` are not sorted, they will be sorted **in-place**.
 """->
-function polyarea(p::AbstractPoints2D)
-	#= @assert issorted(p) =#
+function polyarea{T<:AbstractPoint2D}(p::Vector{T})
+	issorted(p) || sort!(p)
 
 	Np = length(p)
 	A = getx(p[1])*( gety(p[2]) - gety(p[Np]) ) + getx(p[Np])*( gety(p[1]) - gety(p[Np-1]) )
@@ -21,18 +22,19 @@ function Base.(:-)(p::AbstractPoint2D, q::AbstractPoint2D)
 	Point2D( getx(p)-getx(q), gety(p)-gety(q) )
 end
 
+# Compute the average point of pts
 function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	# Average point
-	cx = 0.0
-	cy = 0.0
+	ax = 0.0
+	ay = 0.0
 
 	for p in pts
-		cx += getx(p)
-		cy += gety(p)
+		ax += getx(p)
+		ay += gety(p)
 	end
 
 	Np = length(pts)
-	Point2D(cx/Np, cy/Np)
+	Point2D(ax/Np, ay/Np)
 end
 
 function Base.issorted(pts::AbstractPoints2D)
