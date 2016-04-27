@@ -1,4 +1,24 @@
 @doc """
+	voronoiarea(C::VoronoiCorners) -> Vector
+
+Compute the area of each of the Voronoi cells in `C`.
+
+Note that if the polygons of `C` are not ordered, they will be changed in-place.
+"""->
+function voronoiarea(C::VoronoiCorners)
+	# TODO: The dreaded corners are indexed by -1. When they are
+	# removed, remember to change NC 
+	NC = length(C) - 1
+	A = Array{Float64}(NC)
+
+	for n in 1:NC
+		A[n] = polyarea( C[n] )
+	end
+
+	return A
+end
+
+@doc """
 	polyarea(p::AbstractPoints2D)
 
 Compute the area of the polygon with vertices `p` using the shoelace formula.
