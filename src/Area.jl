@@ -15,7 +15,7 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 	const scalex = rw[2] - RW_LEFT
 	const scaley = rw[4] - RW_LOWER
 
-	pts = [IndexablePoint( left + (x[n]-RW_LEFT)/scalex, lower + (y[n]-RW_LOWER)/scaley, n) for n = 1:N]
+	pts = [IndexablePoint( LEFT + (x[n]-RW_LEFT)/scalex, LOWER + (y[n]-RW_LOWER)/scaley, n) for n = 1:N]
 
 	# Areas for scaled points
 	C = corners(pts)

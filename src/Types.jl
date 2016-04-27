@@ -12,21 +12,17 @@ Base.getindex(p::IndexablePoint) = p.index
 typealias AbstractPoints2D Vector{AbstractPoint2D}
 typealias IndexablePoints2D Vector{IndexablePoint}
 typealias Points2D Vector{Point2D}
-#= typealias VoronoiCorners Dict{Int, Points2D} =#
 typealias IndexedPolygons Dict{Int, Points2D}
 
 # Edges of the bounding box
-# TODO: constants with uppercase
-const left = VoronoiDelaunay.min_coord
-const right = VoronoiDelaunay.max_coord
-const lower = VoronoiDelaunay.min_coord
-const upper = VoronoiDelaunay.max_coord
-
-const RANGE = right - left
+const LEFT = VoronoiDelaunay.min_coord
+const RIGHT = VoronoiDelaunay.max_coord
+const LOWER = VoronoiDelaunay.min_coord
+const UPPER = VoronoiDelaunay.max_coord
 
 # Corners of the bounding box
-const lowerleft  = Point2D( left, lower )
-const lowerright = Point2D( right, lower )
-const upperright = Point2D( right, upper )
-const upperleft  = Point2D( left, upper )
+const LOWERLEFT  = Point2D( LEFT, LOWER )
+const LOWERRIGHT = Point2D( RIGHT, LOWER )
+const UPPERRIGHT = Point2D( RIGHT, UPPER )
+const UPPERLEFT  = Point2D( LEFT, UPPER )
 

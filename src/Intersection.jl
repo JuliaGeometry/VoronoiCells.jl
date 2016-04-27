@@ -5,7 +5,7 @@ Test if `p` is a corner in the bounding box.
 """->
 function is_bounding_corner(p::Point2D)
 	# TODO: test == or isapprox?
-	isapprox(p, lowerleft) || isapprox(p, lowerright) || isapprox(p, upperleft) || isapprox(p, upperright)
+	isapprox(p, LOWERLEFT) || isapprox(p, LOWERRIGHT) || isapprox(p, UPPERLEFT) || isapprox(p, PPERRIGHT)
 end
 
 @doc """
@@ -38,26 +38,26 @@ Restrict a line segment with endpoints `gena` and `genb` to the bounding box.
 function bounding_intersect(A::Point2D, B::Point2D)
 
 	while !isinside(A)
-		if getx(A) < left
+		if getx(A) < LEFT
 			edge = :left
-		elseif getx(A) > right
+		elseif getx(A) > RIGHT
 			edge = :right
-		elseif gety(A) < lower
+		elseif gety(A) < LOWER
 			edge = :lower
-		elseif gety(A) > upper
+		elseif gety(A) > UPPER
 			edge = :upper
 		end
 		A = intersection(edge, A, B)
 	end
 
 	while !isinside(B)
-		if getx(B) < left
+		if getx(B) < LEFT
 			edge = :left
-		elseif getx(B) > right
+		elseif getx(B) > RIGHT
 			edge = :right
-		elseif gety(B) < lower
+		elseif gety(B) < LOWER
 			edge = :lower
-		elseif gety(B) > upper
+		elseif gety(B) > UPPER
 			edge = :upper
 		end
 		B = intersection(edge, A, B)
@@ -143,6 +143,6 @@ end
 Test if the point `p` is inside the bounding box.
 """->
 function isinside(p::Point2D)
-	left <= getx(p) <= right && lower <= gety(p) <= upper
+	LEFT <= getx(p) <= RIGHT && LOWER <= gety(p) <= UPPER
 end
 
