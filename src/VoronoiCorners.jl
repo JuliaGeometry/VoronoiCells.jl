@@ -6,7 +6,7 @@ import VoronoiDelaunay: getx, gety, getgena, getgenb
 export
 	# Types
 	IndexablePoint,
-	VoronoiCorners,
+	IndexedPolygons,
 
 	# Functions
 	corners,
@@ -19,6 +19,5 @@ include("Intersection.jl")
 include("Corners.jl")
 include("Area.jl")
 include("Density.jl")
-include("Plot.jl")
 
 end # module

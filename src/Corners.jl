@@ -23,12 +23,12 @@ function contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
 end
 
 @doc """
-	newcorner!(corners::VoronoiCorners, generator::Point2D, corner::Point2D)
+	newcorner!(corners::IndexedPolygons, generator::Point2D, corner::Point2D)
 
 Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
-If `generator` is already in `VoronoiCorners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
+If `generator` is already in `corners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
 """->
-function newcorner!(corners::VoronoiCorners, generator::IndexablePoint, corner::AbstractPoint2D)
+function newcorner!(corners::IndexedPolygons, generator::IndexablePoint, corner::AbstractPoint2D)
 	index = getindex(generator)
 
 	if haskey( corners, index )
@@ -41,12 +41,12 @@ function newcorner!(corners::VoronoiCorners, generator::IndexablePoint, corner::
 end
 
 @doc """
-	newedge!(corners::VoronoiCorners, edge::VoronoiEdge)
+	newedge!(corners::corners, edge::VoronoiEdge)
 
 Update `corners` with the corners of `edge`.
 See also `newcorner!`.
 """->
-function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint})
+function newedge!(corners::IndexedPolygons, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint})
 	# TODO: Import edge type?
 
 	# Make sure edge is inside the bounding box
@@ -66,7 +66,7 @@ function newedge!(corners::VoronoiCorners, edge::VoronoiDelaunay.VoronoiEdge{Ind
 end
 
 @doc """
-	corners(generators::IndexablePoints2D) -> VoronoiCorners
+	corners(generators::IndexablePoints2D) -> corners
 
 Collect the Voronoi cells from a set of `generators`.
 """->
@@ -78,7 +78,7 @@ function corners(generators::IndexablePoints2D)
 
 	# Initialize output
 	# TODO: In separate function
-	corners = VoronoiCorners()
+	corners = IndexedPolygons()
 	sizehint!(corners, Ngen)
 
 	for edge in voronoiedges(tess)
