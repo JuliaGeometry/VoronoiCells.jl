@@ -15,7 +15,7 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 	const scalex = rw[2] - RW_LEFT
 	const scaley = rw[4] - RW_LOWER
 
-	pts = [IndexablePoint( LEFT + (x[n]-RW_LEFT)/scalex, LOWER + (y[n]-RW_LOWER)/scaley, n) for n = 1:N]
+	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/scalex, LOWER + (y[n]-RW_LOWER)/scaley, n) for n = 1:N]
 
 	# Areas for scaled points
 	C = corners(pts)
@@ -66,10 +66,6 @@ function polyarea{T<:AbstractPoint2D}(pts::Vector{T})
 	return 0.5*abs(A)
 end
 
-function Base.(:-)(p::AbstractPoint2D, q::AbstractPoint2D)
-	Point2D( getx(p)-getx(q), gety(p)-gety(q) )
-end
-
 # Compute the average point of pts
 function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	# Average point
@@ -83,6 +79,10 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 
 	Np = length(pts)
 	Point2D(ax/Np, ay/Np)
+end
+
+function Base.(:-)(p::AbstractPoint2D, q::AbstractPoint2D)
+	Point2D( getx(p)-getx(q), gety(p)-gety(q) )
 end
 
 function Base.sort!{T<:AbstractPoint2D}(pts::Vector{T})

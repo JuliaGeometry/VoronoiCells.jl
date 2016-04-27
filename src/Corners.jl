@@ -13,7 +13,6 @@ end
 Test if the point `p` is in the list of points `Pts`.
 """->
 function contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
-#= function contains(p::AbstractPoint2D, Pts::AbstractPoints2D) =#
 	for element in Pts
 		if isapprox(p, element)
 			return true
@@ -23,12 +22,12 @@ function contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
 end
 
 @doc """
-	newcorner!(corners::IndexedPolygons, generator::Point2D, corner::Point2D)
+	newcorner!(corners::IndexedPolygons, generator::IndexablePoint2D, corner::Point2D)
 
 Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
 If `generator` is already in `corners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
 """->
-function newcorner!(corners::IndexedPolygons, generator::IndexablePoint, corner::AbstractPoint2D)
+function newcorner!(corners::IndexedPolygons, generator::IndexablePoint2D, corner::AbstractPoint2D)
 	index = getindex(generator)
 
 	if haskey( corners, index )
@@ -46,7 +45,7 @@ end
 Update `corners` with the corners of `edge`.
 See also `newcorner!`.
 """->
-function newedge!(corners::IndexedPolygons, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint})
+function newedge!(corners::IndexedPolygons, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
 	# TODO: Import edge type?
 
 	# Make sure edge is inside the bounding box
@@ -73,7 +72,7 @@ Collect the Voronoi cells from a set of `generators`.
 function corners(generators::IndexablePoints2D)
 	# VoronoiDelaunay data structure
 	Ngen = length(generators)
-	tess = DelaunayTessellation2D{IndexablePoint}(Ngen)
+	tess = DelaunayTessellation2D{IndexablePoint2D}(Ngen)
 	push!(tess, generators)
 
 	# Initialize output

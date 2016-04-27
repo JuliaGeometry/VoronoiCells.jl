@@ -10,7 +10,7 @@ end
 """->
 function density(generators::IndexablePoints2D)
 	Ngen = length(generators)
-	tess = DelaunayTessellation2D{IndexablePoint}(Ngen)
+	tess = DelaunayTessellation2D{IndexablePoint2D}(Ngen)
 	push!(tess, generators)
 
 	dens = 0.0
@@ -41,7 +41,7 @@ end
 function density(x::Vector, y::Vector)
 	@assert (N = length(x)) == length(y)
 
-	p = [IndexablePoint(x[n], y[n], n) for n=1:N]
+	p = [IndexablePoint2D(x[n], y[n], n) for n=1:N]
 	density(p)
 end
 

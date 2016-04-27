@@ -5,7 +5,7 @@ import VoronoiDelaunay: getx, gety, getgena, getgenb
 
 export
 	# Types
-	IndexablePoint,
+	IndexablePoint2D,
 	IndexedPolygons,
 
 	# Functions
