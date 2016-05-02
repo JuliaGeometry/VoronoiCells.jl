@@ -12,7 +12,7 @@ end
 
 Test if the point `p` is in the list of points `Pts`.
 """->
-function contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
+function Base.contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
 	for element in Pts
 		if isapprox(p, element)
 			return true
@@ -40,7 +40,7 @@ function newcorner!(corners::IndexedPolygons, generator::IndexablePoint2D, corne
 end
 
 @doc """
-	newedge!(corners::corners, edge::VoronoiEdge)
+	newedge!(corners::IndexedPolygons, edge::VoronoiEdge)
 
 Update `corners` with the corners of `edge`.
 See also `newcorner!`.
@@ -48,11 +48,14 @@ See also `newcorner!`.
 function newedge!(corners::IndexedPolygons, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
 	# TODO: Import edge type?
 
-	# Make sure edge is inside the bounding box
+	# Clip edge to bounding box
 	A = geta(edge)
 	B = getb(edge)
 	if !isinside(A) || !isinside(B)
-		A, B = bounding_intersect(A, B)
+		A, B = clip(A, B)
+		if isnan(A) || isnan(B)
+			return
+		end
 	end
 
 	generator = getgena(edge)
@@ -76,7 +79,6 @@ function corners(generators::IndexablePoints2D)
 	push!(tess, generators)
 
 	# Initialize output
-	# TODO: In separate function
 	corners = IndexedPolygons()
 	sizehint!(corners, Ngen)
 

@@ -47,7 +47,7 @@ Compute the density for points with coordinates `x` and `y` in the window `rw`.
 The vector `rw` specifies the boundary rectangle as `[xmin, xmax, ymin, ymax]`.
 By default, `rw` is the unit rectangle.
 """->
-function density(x::AbstractVector, y::AbstractVectorrw::Vector{Float64}=[0.0;1.0;0.0;1.0])
+function density{T<:Real}(x::AbstractVector{T}, y::AbstractVector{T}; rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
 	@assert (N = length(x)) == length(y)
 
 	# TODO: The same scaling as in area

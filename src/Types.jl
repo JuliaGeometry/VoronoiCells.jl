@@ -20,9 +20,3 @@ const RIGHT = VoronoiDelaunay.max_coord
 const LOWER = VoronoiDelaunay.min_coord
 const UPPER = VoronoiDelaunay.max_coord
 
-# Corners of the bounding box
-const LOWERLEFT  = Point2D( LEFT, LOWER )
-const LOWERRIGHT = Point2D( RIGHT, LOWER )
-const UPPERRIGHT = Point2D( RIGHT, UPPER )
-const UPPERLEFT  = Point2D( LEFT, UPPER )
-

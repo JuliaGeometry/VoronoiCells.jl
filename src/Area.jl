@@ -84,8 +84,16 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	Point2D(ax/Np, ay/Np)
 end
 
+function Base.(:+)(p::AbstractPoint2D, q::AbstractPoint2D)
+	Point2D( getx(p)+getx(q), gety(p)+gety(q) )
+end
+
 function Base.(:-)(p::AbstractPoint2D, q::AbstractPoint2D)
 	Point2D( getx(p)-getx(q), gety(p)-gety(q) )
+end
+
+function Base.(:*)(a::Float64, p::AbstractPoint2D)
+	Point2D( a*getx(p), a*gety(p) )
 end
 
 function Base.sort!{T<:AbstractPoint2D}(pts::Vector{T})
