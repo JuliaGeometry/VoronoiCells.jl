@@ -12,7 +12,7 @@ end
 
 Test if the point `p` is in the list of points `Pts`.
 """->
-function contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
+function Base.contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
 	for element in Pts
 		if isapprox(p, element)
 			return true
@@ -22,37 +22,40 @@ function contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
 end
 
 @doc """
-	newcorner!(corners::IndexedPolygons, generator::IndexablePoint2D, corner::Point2D)
+	newcorner!(polygon::IndexedPolygon, generator::IndexablePoint2D, corner::Point2D)
 
-Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
-If `generator` is already in `corners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
+Update `polygon` with a new `corner` of the cell belonging to a particular `generator`.
+If `generator` is already in `polygon`, the entry in `polygon` is updated with `corner` and otherwise a new cell is added.
 """->
-function newcorner!(corners::IndexedPolygons, generator::IndexablePoint2D, corner::AbstractPoint2D)
+function newcorner!(polygon::IndexedPolygon, generator::IndexablePoint2D, corner::AbstractPoint2D)
 	index = getindex(generator)
 
-	if haskey( corners, index )
-		if !contains(corner, corners[index])
-			push!( corners[index], corner )
+	if haskey( polygon, index )
+		if !contains(corner, polygon[index])
+			push!( polygon[index], corner )
 		end
 	else
-		corners[index] = [ corner ]
+		polygon[index] = [ corner ]
 	end
 end
 
 @doc """
-	newedge!(corners::corners, edge::VoronoiEdge)
+	newedge!(corners::IndexedPolygon, edge::VoronoiEdge)
 
 Update `corners` with the corners of `edge`.
 See also `newcorner!`.
 """->
-function newedge!(corners::IndexedPolygons, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
+function newedge!(corners::IndexedPolygon, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
 	# TODO: Import edge type?
 
-	# Make sure edge is inside the bounding box
+	# Clip edge to bounding box
 	A = geta(edge)
 	B = getb(edge)
 	if !isinside(A) || !isinside(B)
-		A, B = bounding_intersect(A, B)
+		A, B = clip(A, B)
+		if isnan(A) || isnan(B)
+			return
+		end
 	end
 
 	generator = getgena(edge)
@@ -76,8 +79,7 @@ function corners(generators::IndexablePoints2D)
 	push!(tess, generators)
 
 	# Initialize output
-	# TODO: In separate function
-	corners = IndexedPolygons()
+	corners = IndexedPolygon()
 	sizehint!(corners, Ngen)
 
 	for edge in voronoiedges(tess)

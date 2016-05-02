@@ -30,13 +30,13 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 end
 
 @doc """
-	voronoiarea(C::IndexedPolygons) -> Vector
+	voronoiarea(C::IndexedPolygon) -> Vector
 
 Compute the area of each of the Voronoi cells in `C`.
 
 Note that if the polygons of `C` are not ordered, they will be changed in-place.
 """->
-function voronoiarea(C::IndexedPolygons)
+function voronoiarea(C::IndexedPolygon)
 	# TODO: The dreaded corners are indexed by -1. When they are
 	# removed, remember to change NC 
 	NC = length(C) - 1
@@ -84,8 +84,16 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	Point2D(ax/Np, ay/Np)
 end
 
+function Base.(:+)(p::AbstractPoint2D, q::AbstractPoint2D)
+	Point2D( getx(p)+getx(q), gety(p)+gety(q) )
+end
+
 function Base.(:-)(p::AbstractPoint2D, q::AbstractPoint2D)
 	Point2D( getx(p)-getx(q), gety(p)-gety(q) )
+end
+
+function Base.(:*)(a::Float64, p::AbstractPoint2D)
+	Point2D( a*getx(p), a*gety(p) )
 end
 
 function Base.sort!{T<:AbstractPoint2D}(pts::Vector{T})
