@@ -12,7 +12,7 @@ Base.getindex(p::IndexablePoint2D) = p.index
 typealias AbstractPoints2D Vector{AbstractPoint2D}
 typealias IndexablePoints2D Vector{IndexablePoint2D}
 typealias Points2D Vector{Point2D}
-typealias IndexedPolygons Dict{Int, Points2D}
+typealias IndexedPolygon Dict{Int, Points2D}
 
 # Edges of the bounding box
 const LEFT = VoronoiDelaunay.min_coord
