@@ -11,8 +11,12 @@ end
 @doc """
 	density(pts::AbstractPoints2D) -> Real
 
-Here density is defined as the minimum (infimum) radius of a covering
-with equal-sized balls centered at the points in `pts`
+Here density is defined as the minimum radius of a covering of
+the GeometricalPredicates region with equal-sized balls centered at the 
+points in `pts`.
+
+By definition of the Voronoi tesselation this radius is the maximum
+distance from a Voronoi cell vertix to its generator.
 """->
 function density(pts::AbstractPoints2D)
 	Ngen = length(pts)
@@ -46,6 +50,7 @@ By default, `rw` is the unit rectangle.
 function density(x::AbstractVector, y::AbstractVectorrw::Vector{Float64}=[0.0;1.0;0.0;1.0])
 	@assert (N = length(x)) == length(y)
 
+	# TODO: The same scaling as in area
 	p = [IndexablePoint2D(x[n], y[n], n) for n=1:N]
 	density(p)
 end

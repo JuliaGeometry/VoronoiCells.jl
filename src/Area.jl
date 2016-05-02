@@ -15,16 +15,16 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 	const RW_LOWER = rw[3]
 	@assert minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4]
 
-	const scalex = rw[2] - RW_LEFT
-	const scaley = rw[4] - RW_LOWER
+	const SCALEX = rw[2] - RW_LEFT
+	const SCALEY = rw[4] - RW_LOWER
 
-	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/scalex, LOWER + (y[n]-RW_LOWER)/scaley, n) for n = 1:N]
+	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/SCALEX, LOWER + (y[n]-RW_LOWER)/SCALEY, n) for n = 1:N]
 
 	# Areas for scaled points
 	C = corners(pts)
 	A = voronoiarea(C)
 
-	scale!(A, scalex*scaley)
+	scale!(A, SCALEX*SCALEY)
 
 	return A
 end

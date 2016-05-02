@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/robertdj/VoronoiCorners.jl.svg?branch=master)](https://travis-ci.org/robertdj/VoronoiCorners.jl)
 
-VoronoiCorners use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices of the Voronoi cells in a tessellation.
+*VoronoiCorners* use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices of the Voronoi cells in a tessellation.
 Furthermore, it gives access to the area of the individual Voronoi cells in the same order as the input points.
 
 
@@ -40,7 +40,7 @@ The latter `voronoiarea` is to allow general point configurations instead of onl
 
 ## Installation
 
-VoronoiCorners is not registered (yet), so install using 
+*VoronoiCorners* is not registered (yet), so install using 
 
 ```julia
 Pkg.clone("https://github.com/robertdj/VoronoiCorners.jl")

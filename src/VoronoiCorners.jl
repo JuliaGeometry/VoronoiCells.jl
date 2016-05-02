@@ -18,6 +18,6 @@ include("Types.jl")
 include("Intersection.jl")
 include("Corners.jl")
 include("Area.jl")
-include("Density.jl")
+#include("Density.jl")
 
 end # module
