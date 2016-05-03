@@ -1,4 +1,4 @@
-module VoronoiCorners
+module VoronoiCells
 
 using VoronoiDelaunay
 import VoronoiDelaunay: getx, gety, getgena, getgenb

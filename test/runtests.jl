@@ -1,5 +1,5 @@
-using VoronoiCorners
-import VoronoiCorners: LEFT, RIGHT, LOWER, UPPER
+using VoronoiCells
+import VoronoiCells: LEFT, RIGHT, LOWER, UPPER
 using Deldir
 using Base.Test
 
@@ -8,7 +8,7 @@ N = 100
 x = 1.0 + rand(N)
 y = 1.0 + rand(N)
 
-A = VoronoiCorners.voronoiarea(x, y; rw=[LEFT; RIGHT; LOWER; UPPER])
+A = VoronoiCells.voronoiarea(x, y; rw=[LEFT; RIGHT; LOWER; UPPER])
 
 # A weak test until the corner issue is fixed
 @test sum(A) <= 1.0
@@ -16,7 +16,7 @@ A = VoronoiCorners.voronoiarea(x, y; rw=[LEFT; RIGHT; LOWER; UPPER])
 
 
 # ------------------------------------------------------------
-# I trust Deldir: With the corner points added, VoronoiCorners and
+# I trust Deldir: With the corner points added, VoronoiCells and
 # Deldir shoud return the same tesselation
 
 x2 = [x ; RIGHT ; LEFT ; LEFT ; RIGHT]

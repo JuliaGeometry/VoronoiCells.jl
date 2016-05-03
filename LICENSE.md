@@ -1,4 +1,4 @@
-The VoronoiCorners.jl package is licensed under the MIT "Expat" License:
+The VoronoiCells.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2016: Robert DJ.
 >
