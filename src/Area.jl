@@ -30,13 +30,13 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 end
 
 @doc """
-	voronoiarea(C::IndexedPolygon) -> Vector
+	voronoiarea(C::Tessellation) -> Vector
 
 Compute the area of each of the Voronoi cells in `C`.
 
 Note that if the polygons of `C` are not ordered, they will be changed in-place.
 """->
-function voronoiarea(C::IndexedPolygon)
+function voronoiarea(C::Tessellation)
 	# TODO: The dreaded corners are indexed by -1. When they are
 	# removed, remember to change NC 
 	NC = length(C) - 1

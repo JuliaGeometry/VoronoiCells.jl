@@ -8,12 +8,12 @@ function Base.isapprox(a::AbstractPoint2D, b::AbstractPoint2D)
 end
 
 @doc """
-	contains(p::AbstractPoint2D, Pts::AbstractPoint2D) -> Bool
+	contains(p::AbstractPoint2D, pts::AbstractPoint2D) -> Bool
 
-Test if the point `p` is in the list of points `Pts`.
+Test if the point `p` is in the list of points `pts`.
 """->
-function Base.contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
-	for element in Pts
+function Base.contains{T<:AbstractPoint2D}(p::AbstractPoint2D, pts::Vector{T})
+	for element in pts
 		if isapprox(p, element)
 			return true
 		end
@@ -22,12 +22,12 @@ function Base.contains{T<:AbstractPoint2D}(p::AbstractPoint2D, Pts::Vector{T})
 end
 
 @doc """
-	newcorner!(polygon::IndexedPolygon, generator::IndexablePoint2D, corner::Point2D)
+	newcorner!(polygon::Tessellation, generator::IndexablePoint2D, corner::Point2D)
 
 Update `polygon` with a new `corner` of the cell belonging to a particular `generator`.
 If `generator` is already in `polygon`, the entry in `polygon` is updated with `corner` and otherwise a new cell is added.
 """->
-function newcorner!(polygon::IndexedPolygon, generator::IndexablePoint2D, corner::AbstractPoint2D)
+function newcorner!(polygon::Tessellation, generator::IndexablePoint2D, corner::AbstractPoint2D)
 	index = getindex(generator)
 
 	if haskey( polygon, index )
@@ -40,12 +40,12 @@ function newcorner!(polygon::IndexedPolygon, generator::IndexablePoint2D, corner
 end
 
 @doc """
-	newedge!(corners::IndexedPolygon, edge::VoronoiEdge)
+	newedge!(corners::Tessellation, edge::VoronoiEdge)
 
 Update `corners` with the corners of `edge`.
 See also `newcorner!`.
 """->
-function newedge!(corners::IndexedPolygon, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
+function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
 	# TODO: Import edge type?
 
 	# Clip edge to bounding box
@@ -79,7 +79,7 @@ function corners(generators::IndexablePoints2D)
 	push!(tess, generators)
 
 	# Initialize output
-	corners = IndexedPolygon()
+	corners = Tessellation()
 	sizehint!(corners, Ngen)
 
 	for edge in voronoiedges(tess)

@@ -6,12 +6,12 @@ import VoronoiDelaunay: getx, gety, getgena, getgenb
 export
 	# Types
 	IndexablePoint2D,
-	IndexedPolygon,
+	Tessellation,
 
 	# Functions
 	corners,
 	voronoiarea,
-	polyarea,
+	polyarea
 	#density
 
 include("Types.jl")
