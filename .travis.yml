@@ -14,3 +14,5 @@ script:
   - julia -e 'Pkg.add("Deldir")'
   - julia -e 'Pkg.add("VoronoiDelaunay"); Pkg.checkout("VoronoiDelaunay")'
   - julia -e 'Pkg.clone(pwd()); Pkg.build("VoronoiCells"); Pkg.test("VoronoiCells"; coverage=true)'
+after_success:
+   - julia -e 'cd(Pkg.dir("VoronoiCells")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
