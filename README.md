@@ -46,3 +46,11 @@ The latter `voronoiarea` is to allow general point configurations instead of onl
 Pkg.clone("https://github.com/robertdj/VoronoiCells.jl")
 ```
 
+At the time of writing, the latest *official* version of VoronoiDelaunay does not provide correct results for *VoronoiCells*, so you need to checkout the latest version:
+
+```julia
+Pkg.checkout("VoronoiDelaunay")
+```
+
+(To undo this checkout, run `Pkg.free("VoronoiDelaunay")`.)
+

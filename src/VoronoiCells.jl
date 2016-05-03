@@ -12,7 +12,7 @@ export
 	corners,
 	voronoiarea,
 	polyarea,
-	density
+	#density
 
 include("Types.jl")
 include("Clipping.jl")
