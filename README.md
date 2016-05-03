@@ -12,7 +12,7 @@ To be able to tie the vertices of a cell to its generator point, a new 2D point 
 
 For convenience, plural versions of different 2D point types are also introduced (`AbstractPoints2D`, `IndexablePoints2D` and `Points2D`).
 
-The main function is `corners` that returns the corners of the Voronoi cells for a vector of `IndexablePoint2D`s:
+The main function is `corners` that returns the vertices of the Voronoi cells for a vector of `IndexablePoint2D`s:
 
 ```julia
 pts = [IndexablePoint2D(1.0+rand(), 1.0+rand(), n) for n=1:10]

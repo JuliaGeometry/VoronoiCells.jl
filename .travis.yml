@@ -11,4 +11,5 @@ before_install:
   - sudo apt-get install -y gfortran
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.clone(pwd()); Pkg.add("Deldir"); Pkg.build("VoronoiCorners"); Pkg.test("VoronoiCorners"; coverage=true)'
+  - julia -e 'Pkg.add("Deldir")'
+  - julia -e 'Pkg.clone(pwd()); Pkg.build("VoronoiCells"); Pkg.test("VoronoiCells"; coverage=true)'
