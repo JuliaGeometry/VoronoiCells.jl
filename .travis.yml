@@ -2,12 +2,13 @@
 language: julia
 os:
   - linux
-  - osx
 julia:
-  - release
-  - nightly
+  - 0.4
 notifications:
   email: false
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y gfortran
 # uncomment the following lines to override the default test script
 #script:
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
