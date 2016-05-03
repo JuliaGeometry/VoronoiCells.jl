@@ -52,8 +52,7 @@ end
 @doc """
 	polyarea(p::AbstractPoints2D)
 
-Compute the area of the polygon with vertices `p` using the shoelace formula.
-
+Compute the area of the polygon with vertices `p` using the shoelace formula.  
 If the points in `p` are not sorted, they will be sorted **in-place**.
 """->
 function polyarea{T<:AbstractPoint2D}(pts::Vector{T})
@@ -84,6 +83,9 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	Point2D(ax/Np, ay/Np)
 end
 
+# TODO: +/- and issorted/sort! with meta programming?
+# TODO: Input is AbstractPoint2D, but output is Point2D. Is
+# AbstractPoint2D necessary?
 function Base.(:+)(p::AbstractPoint2D, q::AbstractPoint2D)
 	Point2D( getx(p)+getx(q), gety(p)+gety(q) )
 end

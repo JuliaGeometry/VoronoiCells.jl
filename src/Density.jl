@@ -18,9 +18,9 @@ points in `pts`.
 By definition of the Voronoi tesselation this radius is the maximum
 distance from a Voronoi cell vertix to its generator.
 """->
-function density(pts::AbstractPoints2D)
+function density{T<:AbstractPoint2D}(pts::Vector{T})
 	Ngen = length(pts)
-	tess = DelaunayTessellation2D(Ngen)
+	tess = DelaunayTessellation2D{T}(Ngen)
 	push!(tess, pts)
 
 	dens = 0.0
@@ -29,7 +29,7 @@ function density(pts::AbstractPoints2D)
 		A = geta(edge)
 		B = getb(edge)
 		if !isinside(A) || !isinside(B)
-			A, B = bounding_intersect(A, B)
+			A, B = clip(A, B)
 		end
 
 		P = getgena(edge)

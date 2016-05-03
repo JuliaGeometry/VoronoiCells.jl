@@ -2,21 +2,20 @@
 
 [![Build Status](https://travis-ci.org/robertdj/VoronoiCorners.jl.svg?branch=master)](https://travis-ci.org/robertdj/VoronoiCorners.jl)
 
-*VoronoiCorners* use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices of the Voronoi cells in a tessellation.
-Furthermore, it gives access to the area of the individual Voronoi cells in the same order as the input points.
+*VoronoiCorners* use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices and areas of the Voronoi cells in a tessellation.
 
 
 ## Usage
 
 To be able to tie the vertices of a cell to its generator point, a new 2D point type is introduced with an index: `IndexablePoint2D`.
-(This type *may* be included in VoronoiDelaunay, cf. [#15](https://github.com/JuliaGeometry/VoronoiDelaunay.jl/issues/15))
+(This type *may* be included in VoronoiDelaunay, cf. [issue #15](https://github.com/JuliaGeometry/VoronoiDelaunay.jl/issues/15))
 
 For convenience, plural versions of different 2D point types are also introduced (`AbstractPoints2D`, `IndexablePoints2D` and `Points2D`).
 
 The main function is `corners` that returns the corners of the Voronoi cells for a vector of `IndexablePoint2D`s:
 
 ```julia
-pts = [IndexablePoint2D(min_coord+rand(), min_coord+rand(), n) for n=1:10]
+pts = [IndexablePoint2D(1.0+rand(), 1.0+rand(), n) for n=1:10]
 C = corners(pts)
 ```
 
@@ -30,7 +29,7 @@ To deal with these corner points, `C` contains the key -1 which holds the vertic
 A couple of functions are available for computing areas:
 
 - `polyarea` which computes the area of a polygon from its vertices using the [shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula)
-- `voronoiarea` for a `Dict` of vertices as the output from `corners`.
+- `voronoiarea` for a `Dict` of polygons as the output from `corners` that computes the area for each polygon.
 - `voronoiarea(x,y)` for vectors `x` and `y`.
 
 The latter `voronoiarea` is to allow general point configurations instead of only those in `[1,2] x [1,2]`.
