@@ -1,17 +1,27 @@
 @doc """
+	dist_squared(p, q) -> Real
+
+The `l2` distance squared between the points `p` and `q`.
 """->
 function dist_squared(p::AbstractPoint2D, q::AbstractPoint2D)
-#= function dist_squared(A::Point2D, B::Point2D) =#
 	(getx(p)-getx(q))^2 + (gety(p)-gety(q))^2 
 end
 
 
 @doc """
+	density(pts::AbstractPoints2D) -> Real
+
+Here density is defined as the minimum radius of a covering of
+the GeometricalPredicates region with equal-sized balls centered at the 
+points in `pts`.
+
+By definition of the Voronoi tesselation this radius is the maximum
+distance from a Voronoi cell vertix to its generator.
 """->
-function density(generators::IndexablePoints2D)
-	Ngen = length(generators)
-	tess = DelaunayTessellation2D{IndexablePoint}(Ngen)
-	push!(tess, generators)
+function density{T<:AbstractPoint2D}(pts::Vector{T})
+	Ngen = length(pts)
+	tess = DelaunayTessellation2D{T}(Ngen)
+	push!(tess, pts)
 
 	dens = 0.0
 	for edge in voronoiedges(tess)
@@ -19,29 +29,29 @@ function density(generators::IndexablePoints2D)
 		A = geta(edge)
 		B = getb(edge)
 		if !isinside(A) || !isinside(B)
-			A, B = bounding_intersect(A, B)
+			A, B = clip(A, B)
 		end
 
 		P = getgena(edge)
-		#= dist1 = dist( A, P ) =#
-		#= dist2 = dist( B, P ) =#
-		#= dens = max( dens, dist1, dist2 ) =#
-
-		#= dens = max( dens, dist_squared(A,P) ) =#
-		#= dens = max( dens, dist_squared(B,P) ) =#
-
-		#= @show dist_squared(A,P) =#
-		#= @show dist_squared(B,P) =#
 		dens = max( dens, dist_squared(A,P), dist_squared(B,P) )
 	end
 
 	return sqrt(dens)
 end
 
-function density(x::Vector, y::Vector)
+@doc """
+	density(x::Vector, y::Vector; rw) -> Real
+
+Compute the density for points with coordinates `x` and `y` in the window `rw`.
+
+The vector `rw` specifies the boundary rectangle as `[xmin, xmax, ymin, ymax]`.
+By default, `rw` is the unit rectangle.
+"""->
+function density{T<:Real}(x::AbstractVector{T}, y::AbstractVector{T}; rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
 	@assert (N = length(x)) == length(y)
 
-	p = [IndexablePoint(x[n], y[n], n) for n=1:N]
+	# TODO: The same scaling as in area
+	p = [IndexablePoint2D(x[n], y[n], n) for n=1:N]
 	density(p)
 end
 
