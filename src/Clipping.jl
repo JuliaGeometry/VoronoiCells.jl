@@ -1,5 +1,5 @@
 @doc """
-	clip(A::Point2D, B::Point2D) -> C, D
+	clip(A::AbstractPoint2D, B::AbstractPoint2D) -> C, D
 
 Clip the line segment with endpoints `A` and `B` to the bounding box.
 The returned points `C` and `D` are the endpoints of the intersection.
@@ -7,7 +7,8 @@ The returned points `C` and `D` are the endpoints of the intersection.
 If the line segment is not intersecting the bounding box, both `C` and
 `D` are `NaN` points.
 """->
-function clip(A::Point2D, B::Point2D)
+function clip(A::AbstractPoint2D, B::AbstractPoint2D)
+	# TODO: Return Void if there's no overlap?
 	if isinside(A) && isinside(B)
 		return A, B
 	end
@@ -23,7 +24,8 @@ function clip(A::Point2D, B::Point2D)
 		if p[k] == 0.0
 			# Line parallel with k'th edge
 			if q[k] < 0.0
-				return Point2D(NaN,NaN), Point2D(NaN,NaN)
+				#= return Point2D(NaN,NaN), Point2D(NaN,NaN) =#
+				return nothing
 			end
 		elseif p[k] < 0.0
 			# Outside to inside
@@ -51,7 +53,7 @@ end
 
 Test if the point `p` is inside the bounding box.
 """->
-function isinside(p::Point2D)
+function isinside(p::AbstractPoint2D)
 	LEFT <= getx(p) <= RIGHT && LOWER <= gety(p) <= UPPER
 end
 

@@ -83,31 +83,30 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	Point2D(ax/Np, ay/Np)
 end
 
-# TODO: +/- and issorted/sort! with meta programming?
 # TODO: Input is AbstractPoint2D, but output is Point2D. Is
 # AbstractPoint2D necessary?
-function Base.(:+)(p::AbstractPoint2D, q::AbstractPoint2D)
-	Point2D( getx(p)+getx(q), gety(p)+gety(q) )
-end
-
-function Base.(:-)(p::AbstractPoint2D, q::AbstractPoint2D)
-	Point2D( getx(p)-getx(q), gety(p)-gety(q) )
+# Addition and subtraction for AbstractPoint2D
+for op in [:+,:-]
+	@eval begin
+		function Base.$op(p::AbstractPoint2D, q::AbstractPoint2D)
+			Point2D( $op(getx(p), getx(q)), $op(gety(p), gety(q)) )
+		end
+	end
 end
 
 function Base.(:*)(a::Float64, p::AbstractPoint2D)
 	Point2D( a*getx(p), a*gety(p) )
 end
 
-function Base.sort!{T<:AbstractPoint2D}(pts::Vector{T})
-	center = mean(pts)
-	centralize = p -> p - center
-	sort!( pts, by=centralize )
-end
-
-function Base.issorted{T<:AbstractPoint2D}(pts::Vector{T})
-	center = mean(pts)
-	centralize = p -> p - center
-	issorted( pts, by=centralize )
+# sorting for AbstractPoints2D
+for name in [:sort!,:issorted]
+	@eval begin
+		function Base.$name{T<:AbstractPoint2D}(pts::Vector{T})
+			center = mean(pts)
+			centralize = p -> p - center
+			$name( pts, by=centralize )
+		end
+	end
 end
 
 # http://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order

@@ -12,7 +12,7 @@ end
 
 Test if the point `p` is in the list of points `pts`.
 """->
-function Base.contains{T<:AbstractPoint2D}(p::AbstractPoint2D, pts::Vector{T})
+function Base.contains{T<:AbstractPoint2D}(pts::Vector{T}, p::AbstractPoint2D)
 	for element in pts
 		if isapprox(p, element)
 			return true
@@ -31,7 +31,7 @@ function newcorner!(polygon::Tessellation, generator::IndexablePoint2D, corner::
 	index = getindex(generator)
 
 	if haskey( polygon, index )
-		if !contains(corner, polygon[index])
+		if !contains(polygon[index], corner)
 			push!( polygon[index], corner )
 		end
 	else
