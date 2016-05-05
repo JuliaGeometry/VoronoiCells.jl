@@ -1,6 +1,6 @@
 using VoronoiCells
-using VoronoiDelaunay
 import VoronoiCells: LEFT, RIGHT, LOWER, UPPER
+using VoronoiDelaunay
 using Base.Test
 
 # Area of square

@@ -53,8 +53,8 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 	B = getb(edge)
 	if !isinside(A) || !isinside(B)
 		A, B = clip(A, B)
-		if isnan(A) || isnan(B)
-			return
+		if isa(A,Void) || isa(B,Void)
+			return nothing
 		end
 	end
 

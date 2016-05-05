@@ -11,7 +11,8 @@ export
 	# Functions
 	corners,
 	voronoiarea,
-	polyarea
+	polyarea,
+	clip
 	#density
 
 include("Types.jl")
