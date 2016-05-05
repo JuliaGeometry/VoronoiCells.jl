@@ -83,14 +83,11 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	Point2D(ax/Np, ay/Np)
 end
 
-# TODO: Input is AbstractPoint2D, but output is Point2D. Is
-# AbstractPoint2D necessary?
+# TODO: Input is AbstractPoint2D, but output is Point2D. Is AbstractPoint2D necessary?
 # Addition and subtraction for AbstractPoint2D
 for op in [:+,:-]
 	@eval begin
-		function Base.$op(p::AbstractPoint2D, q::AbstractPoint2D)
-			Point2D( $op(getx(p), getx(q)), $op(gety(p), gety(q)) )
-		end
+		Base.$op(p::AbstractPoint2D, q::AbstractPoint2D) = Point2D( $op(getx(p), getx(q)), $op(gety(p), gety(q)) )
 	end
 end
 

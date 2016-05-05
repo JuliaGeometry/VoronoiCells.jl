@@ -18,13 +18,13 @@ C, D = clip(A, B)
 # With one point on the boundary and the other outside (in the correct
 # direction), clip should return two identical points
 
-A = Point2D(LEFT, 0.5*(LOWER+UPPER))
-B = Point2D(LEFT-0.5, 0.5*(LOWER+UPPER))
+A = Point2D(LEFT, LOWER+rand())
+B = Point2D(LEFT-0.5, LOWER+rand())
 C, D = clip(A, B)
 @test C == D
 
-A = Point2D(0.5*(LEFT+RIGHT), UPPER)
-B = Point2D(0.5*(LEFT+RIGHT), UPPER+0.5)
+A = Point2D(LEFT+rand(), UPPER)
+B = Point2D(LEFT+rand(), UPPER+0.5)
 C, D = clip(A, B)
 @test C == D
 
