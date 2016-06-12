@@ -4,8 +4,7 @@
 Clip the line segment with endpoints `A` and `B` to the bounding box.
 The returned points `C` and `D` are the endpoints of the intersection.
 
-If the line segment is not intersecting the bounding box, both `C` and
-`D` are `NaN` points.
+If the line segment is not intersecting the bounding box, both `C` and `D` are `Void`.
 """->
 function clip(A::AbstractPoint2D, B::AbstractPoint2D)
 	# TODO: Use Line2D from GeometricalPredicates as input?
@@ -54,5 +53,20 @@ Test if the point `p` is inside the bounding box.
 """->
 function isinside(p::AbstractPoint2D)
 	LEFT <= getx(p) <= RIGHT && LOWER <= gety(p) <= UPPER
+end
+
+@doc """
+	isoutside(edge::VoronoiEdge) -> Bool
+
+Test if `edge` intersects the bounding box. 
+"""->
+function isoutside(edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
+	A, B = clip( geta(edge), getb(edge) )
+
+	if isa(A,Void) && isa(B,Void)
+		return true
+	else
+		return false
+	end
 end
 

@@ -40,6 +40,75 @@ function newcorner!(polygon::Tessellation, generator::IndexablePoint2D, corner::
 end
 
 @doc """
+	quadrant(edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
+
+Get the quadrant number of the generators of `edge`.
+
+The quadrants are numbered in the usual way, starting with 1 in the upper 
+right and consecutively with positive orientation:
+
+- 1 is the upper right
+- 2 is the upper left
+- 3 is the lower left
+- 4 is the lower right
+"""->
+function quadrant(p::AbstractPoint2D)
+	# TODO: Save as a const
+	islow = gety(p) < 0.5*(LOWER+UPPER)
+	isleft = getx(p) < 0.5*(LEFT+RIGHT)
+
+	if !islow && !isleft
+		Q = 1
+	elseif !islow && isleft
+		Q = 2
+	elseif islow && isleft
+		Q = 3
+	elseif islow && !isleft
+		Q = 4
+	end
+
+	return Q
+end
+
+@doc """
+"""->
+function newneighbor!(NB::Neighbors, gen::Integer, p::Integer)
+	if haskey( NB, gen )
+		# Add p to the list of neighbors, if it isn't there already
+		if findfirst( NB[gen], p ) == 0
+			push!( NB[gen], p )
+		end
+	else
+		NB[gen] = [p]
+	end
+end
+
+@doc """
+Update neighbors of `gena` with `genb`.
+"""->
+function newneighbor!(NB::Neighbors, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
+	if isoutside(edge)
+		return nothing
+	end
+
+	# Window corners
+	gena = getgena(edge)
+	gena_index = getindex(gena)
+	if gena_index == -1
+		gena_index = -quadrant(gena)
+	end
+
+	genb = getgenb(edge)
+	genb_index = getindex(genb)
+	if genb_index == -1
+		genb_index = -quadrant(genb)
+	end
+
+	newneighbor!(NB, gena_index, genb_index)
+	newneighbor!(NB, genb_index, gena_index)
+end
+
+@doc """
 	newedge!(corners::Tessellation, edge::VoronoiEdge)
 
 Update `corners` with the corners of `edge`.
@@ -68,7 +137,7 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 end
 
 @doc """
-	corners(generators::IndexablePoints2D) -> corners
+	corners(generators::IndexablePoints2D) -> Tessellation
 
 Collect the Voronoi cells from a set of `generators`.
 """->
@@ -80,13 +149,31 @@ function corners(generators::IndexablePoints2D)
 
 	# Initialize output
 	corners = Tessellation()
-	sizehint!(corners, Ngen)
+	sizehint!(corners, Ngen+1)
+	neighbors = Neighbors()
+	sizehint!(neighbors, Ngen+4)
 
 	for edge in voronoiedges(tess)
-		# TODO: Leave out the corners of the bounding box
 		newedge!(corners, edge)
+		newneighbor!(neighbors, edge)
 	end
 
-	return corners
+	return corners, neighbors
 end
+
+@doc """
+Remove the bounding window corners and update the bordering cells in `corners`.
+"""->
+function removecorner!(corners::Tessellation, neighbors::Neighbors)
+	pop!(corners, -1)
+end
+
+#=
+Find the new tesselation for corners and the generators bordering them.
+This gives new corners for the border cells. Simply add these
+corners to the bordering cells and update the cells afterwards:
+If two points (in a sorted cell) lie on a straight line, then remove the
+middle point. 3 points are on a straight line if there is equality in
+the triangle inequality.
+=#
 

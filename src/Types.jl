@@ -12,7 +12,8 @@ Base.getindex(p::IndexablePoint2D) = p.index
 typealias AbstractPoints2D Vector{AbstractPoint2D}
 typealias IndexablePoints2D Vector{IndexablePoint2D}
 typealias Points2D Vector{Point2D}
-typealias Tessellation Dict{Int, Points2D}
+typealias Tessellation Dict{Int64, Points2D}
+typealias Neighbors Dict{Int64, Vector{Int64}}
 
 # Edges of the bounding box
 const LEFT = VoronoiDelaunay.min_coord
