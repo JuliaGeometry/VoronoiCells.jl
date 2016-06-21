@@ -49,9 +49,10 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 	# TODO: Import edge type?
 
 	# Clip edge to bounding box
-	A = geta(edge)
-	B = getb(edge)
+	A = small2large(geta(edge))
+	B = small2large(getb(edge))
 	if !isinside(A) || !isinside(B)
+		# TODO: Use isoutside
 		A, B = clip(A, B)
 		if isa(A,Void) || isa(B,Void)
 			return nothing
@@ -73,28 +74,80 @@ end
 Collect the Voronoi cells from a set of `generators`.
 """->
 function corners(generators::IndexablePoints2D)
+	# Transform points to the middle square
+	tgen = large2small(generators)
+
 	# VoronoiDelaunay data structure
-	Ngen = length(generators)
+	Ngen = length(tgen)
 	tess = DelaunayTessellation2D{IndexablePoint2D}(Ngen)
-	push!(tess, generators)
+	push!(tess, tgen)
 
 	# Initialize output
 	corn = Tessellation()
-	sizehint!(corn, Ngen+1)
+	sizehint!(corn, Ngen)
+
+	Q = Dict{Int64, Vector{Int64}}(1=>[],2=>[],3=>[],4=>[])
 
 	for edge in voronoiedges(tess)
 		newedge!(corn, edge)
+
+		quadrant!(Q, edge)
 	end
 
-	return corn
+	# Add corners of bounding box
+	sort!(generators, by=getindex)
+	for q in 1:4
+		D = Inf
+		BCidx = -1
+		for idx in Q[q]
+			DD = dist_squared(BC[q], generators[idx])
+			if DD < D
+				D = DD
+				BCidx = idx
+			end
+		end
+		newcorner!(corn, generators[BCidx], BC[q])
+	end
+
+	return corn, Q
 end
 
+@doc """
+Find the indices of the points whose cell border a spurious corner cell.
+
+This function may include too many points, but it is not of importance for the performance.
+"""->
+function quadrant!{T<:AbstractPoint2D}(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T})
+	if isoutside(edge)
+		return nothing
+	end
+
+	gena = getgena(edge)
+	genb = getgenb(edge)
+	if getindex(gena) == -1
+		q = quadrant(gena)
+		push!(Q[q], getindex(genb))
+	end
+	if getindex(genb) == -1
+		q = quadrant(genb)
+		push!(Q[q], getindex(gena))
+	end
+end
+
+
+function large2small(p::IndexablePoint2D)
+	IndexablePoint2D( 0.5*getx(p)+0.75, 0.5*gety(p)+0.75, getindex(p) )
+end
 
 function large2small(pts::Vector{IndexablePoint2D})
-	[IndexablePoint2D( 0.5*getx(p)+0.75, 0.5*gety(p)+0.75, getindex(p) ) for p in pts]
+	[large2small(p) for p in pts]
 end
 
-function small2large(pts::Vector{Point2D})
-	[Point2D( 2.0*getx(p)-1.5, 2.0*gety(p)-1.5 ) for p in pts]
+function small2large(p::Point2D)
+	Point2D( 2.0*getx(p)-1.5, 2.0*gety(p)-1.5 )
 end
+
+#= function small2large(pts::Vector{Point2D}) =#
+#= 	[small2large(p) for p in pts] =#
+#= end =#
 

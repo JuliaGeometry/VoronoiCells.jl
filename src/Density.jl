@@ -1,14 +1,4 @@
 @doc """
-	dist_squared(p, q) -> Real
-
-The `l2` distance squared between the points `p` and `q`.
-"""->
-function dist_squared(p::AbstractPoint2D, q::AbstractPoint2D)
-	(getx(p)-getx(q))^2 + (gety(p)-gety(q))^2 
-end
-
-
-@doc """
 	density(pts::AbstractPoints2D) -> Real
 
 Here density is defined as the minimum radius of a covering of
