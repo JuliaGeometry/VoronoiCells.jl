@@ -21,7 +21,7 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/SCALEX, LOWER + (y[n]-RW_LOWER)/SCALEY, n) for n = 1:N]
 
 	# Areas for scaled points
-	C = corners(pts)
+	C = vcorners(pts)
 	A = voronoiarea(C)
 
 	scale!(A, SCALEX*SCALEY)

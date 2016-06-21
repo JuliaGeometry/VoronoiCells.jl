@@ -20,9 +20,14 @@ const RIGHT = VoronoiDelaunay.max_coord
 const LOWER = VoronoiDelaunay.min_coord
 const UPPER = VoronoiDelaunay.max_coord
 
+const MIDDLEy = 0.5*(LOWER + UPPER)
+const MIDDLEx = 0.5*(LEFT + RIGHT)
+
 const LL = Point2D(LEFT, LOWER)
 const RL = Point2D(RIGHT, LOWER)
 const RU = Point2D(RIGHT, UPPER)
 const LU = Point2D(LEFT, UPPER)
-const BC = [RU; LU; LL; RL]
+
+# Corners of the bounding box ordered by quadrant
+const BoxCorners = [RU; LU; LL; RL]
 

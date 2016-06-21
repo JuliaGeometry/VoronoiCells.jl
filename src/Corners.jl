@@ -1,41 +1,18 @@
 @doc """
-	isapprox(a::AbstractPoint2D, b::AbstractPoint2D) -> Bool
+	newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::Point2D)
 
-Test if the two points `a` and `b` are approximately equal in the `l1`-norm.
+Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
+If `generator` is already in `corners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
 """->
-function Base.isapprox(a::AbstractPoint2D, b::AbstractPoint2D)
-	isapprox(getx(a), getx(b)) && isapprox(gety(a), gety(b))
-end
-
-@doc """
-	contains(p::AbstractPoint2D, pts::AbstractPoint2D) -> Bool
-
-Test if the point `p` is in the list of points `pts`.
-"""->
-function Base.contains{T<:AbstractPoint2D}(pts::Vector{T}, p::AbstractPoint2D)
-	for element in pts
-		if isapprox(p, element)
-			return true
-		end
-	end
-	return false
-end
-
-@doc """
-	newcorner!(polygon::Tessellation, generator::IndexablePoint2D, corner::Point2D)
-
-Update `polygon` with a new `corner` of the cell belonging to a particular `generator`.
-If `generator` is already in `polygon`, the entry in `polygon` is updated with `corner` and otherwise a new cell is added.
-"""->
-function newcorner!(polygon::Tessellation, generator::IndexablePoint2D, corner::AbstractPoint2D)
+function newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::AbstractPoint2D)
 	index = getindex(generator)
 
-	if haskey( polygon, index )
-		if !contains(polygon[index], corner)
-			push!( polygon[index], corner )
+	if haskey( corners, index )
+		if !contains(corners[index], corner)
+			push!( corners[index], corner )
 		end
 	else
-		polygon[index] = [ corner ]
+		corners[index] = [ corner ]
 	end
 end
 
@@ -52,7 +29,6 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 	A = small2large(geta(edge))
 	B = small2large(getb(edge))
 	if !isinside(A) || !isinside(B)
-		# TODO: Use isoutside
 		A, B = clip(A, B)
 		if isa(A,Void) || isa(B,Void)
 			return nothing
@@ -69,11 +45,11 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 end
 
 @doc """
-	corners(generators::IndexablePoints2D) -> Tessellation
+	vcorners(generators::IndexablePoints2D) -> Tessellation
 
 Collect the Voronoi cells from a set of `generators`.
 """->
-function corners(generators::IndexablePoints2D)
+function vcorners(generators::IndexablePoints2D)
 	# Transform points to the middle square
 	tgen = large2small(generators)
 
@@ -86,36 +62,25 @@ function corners(generators::IndexablePoints2D)
 	corn = Tessellation()
 	sizehint!(corn, Ngen)
 
-	Q = Dict{Int64, Vector{Int64}}(1=>[],2=>[],3=>[],4=>[])
+	# Dict for indices of quadrant neighbors
+	Q = Dict{Int64, Vector{Int64}}(1=>[], 2=>[], 3=>[], 4=>[])
 
 	for edge in voronoiedges(tess)
 		newedge!(corn, edge)
-
 		quadrant!(Q, edge)
 	end
 
-	# Add corners of bounding box
-	sort!(generators, by=getindex)
-	for q in 1:4
-		D = Inf
-		BCidx = -1
-		for idx in Q[q]
-			DD = dist_squared(BC[q], generators[idx])
-			if DD < D
-				D = DD
-				BCidx = idx
-			end
-		end
-		newcorner!(corn, generators[BCidx], BC[q])
-	end
+	# Add corners of bounding box to corn to cor
+	add_bounding_corners!(corn, generators, Q)
 
-	return corn, Q
+	return corn
 end
 
 @doc """
-Find the indices of the points whose cell border a spurious corner cell.
+`Q` is a `Dict` with keys 1 through 4 representing the four quadrants of the bounding box.
+The points with cells that border quadrant `q` are `Q[q]`.
 
-This function may include too many points, but it is not of importance for the performance.
+This function may include too many points, but not so many that it is important for the performance.
 """->
 function quadrant!{T<:AbstractPoint2D}(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T})
 	if isoutside(edge)
@@ -128,12 +93,36 @@ function quadrant!{T<:AbstractPoint2D}(Q::Dict{Int64, Vector{Int64}}, edge::Voro
 		q = quadrant(gena)
 		push!(Q[q], getindex(genb))
 	end
+
 	if getindex(genb) == -1
 		q = quadrant(genb)
 		push!(Q[q], getindex(gena))
 	end
 end
 
+@doc """
+	add_bounding_corners!(corn, generators, Q)
+
+Adds each of the quadrants to the cell in the tesselation `corn` whose generator is closest.
+`Q` holds the indices of the cells that border the bounding box corners (see `quadrant!`).
+"""->
+function add_bounding_corners!(corn::Tessellation, generators::IndexablePoints2D, Q)
+	sort!(generators, by=getindex)
+
+	for quad in keys(Q)
+		gen_dist = Inf
+		neighbor_index = -1
+		for idx in Q[quad]
+			D = dist_squared(BoxCorners[quad], generators[idx])
+			if D < gen_dist
+				gen_dist = D
+				neighbor_index = idx
+			end
+		end
+
+		newcorner!(corn, generators[neighbor_index], BoxCorners[quad])
+	end
+end
 
 function large2small(p::IndexablePoint2D)
 	IndexablePoint2D( 0.5*getx(p)+0.75, 0.5*gety(p)+0.75, getindex(p) )
@@ -146,8 +135,4 @@ end
 function small2large(p::Point2D)
 	Point2D( 2.0*getx(p)-1.5, 2.0*gety(p)-1.5 )
 end
-
-#= function small2large(pts::Vector{Point2D}) =#
-#= 	[small2large(p) for p in pts] =#
-#= end =#
 
