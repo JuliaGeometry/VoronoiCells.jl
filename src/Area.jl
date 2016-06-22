@@ -21,7 +21,7 @@ function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}
 	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/SCALEX, LOWER + (y[n]-RW_LOWER)/SCALEY, n) for n = 1:N]
 
 	# Areas for scaled points
-	C = corners(pts)
+	C = vcorners(pts)
 	A = voronoiarea(C)
 
 	scale!(A, SCALEX*SCALEY)
@@ -37,9 +37,7 @@ Compute the area of each of the Voronoi cells in `C`.
 Note that if the polygons of `C` are not ordered, they will be changed in-place.
 """->
 function voronoiarea(C::Tessellation)
-	# TODO: The dreaded corners are indexed by -1. When they are
-	# removed, remember to change NC 
-	NC = length(C) - 1
+	NC = length(C)
 	A = Array{Float64}(NC)
 
 	for n in 1:NC
@@ -56,6 +54,7 @@ Compute the area of the polygon with vertices `p` using the shoelace formula.
 If the points in `p` are not sorted, they will be sorted **in-place**.
 """->
 function polyarea{T<:AbstractPoint2D}(pts::Vector{T})
+	# TODO: Append ! to function name
 	issorted(pts) || sort!(pts)
 
 	Np = length(pts)
