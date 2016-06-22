@@ -71,11 +71,11 @@ As an optional argument the bounding box of `x` and `y` can be changed
 from the unit square.
 """->
 function fit2boundingbox(x::Vector{Float64}, y::Vector{Float64}, rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
-	@assert (N = length(x)) == length(y)
+	(N = length(x)) == length(y) || throw(DimensionMismatch())
 
 	RW_LEFT = rw[1]
 	RW_LOWER = rw[3]
-	@assert minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4]
+	minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4] || throw(DomainError())
 
 	SCALEX = rw[2] - RW_LEFT
 	SCALEY = rw[4] - RW_LOWER

@@ -43,7 +43,6 @@ Compute the area of the polygon with vertices `p` using the shoelace formula.
 If the points in `p` are not sorted, they will be sorted **in-place**.
 """->
 function polyarea{T<:AbstractPoint2D}(pts::Vector{T})
-	# TODO: Append ! to function name
 	issorted(pts) || sort!(pts)
 
 	Np = length(pts)
@@ -71,7 +70,6 @@ function Base.mean{T<:AbstractPoint2D}(pts::Vector{T})
 	Point2D(ax/Np, ay/Np)
 end
 
-# TODO: Input is AbstractPoint2D, but output is Point2D. Is AbstractPoint2D necessary?
 # Addition and subtraction for AbstractPoint2D
 for op in [:+,:-]
 	@eval begin
