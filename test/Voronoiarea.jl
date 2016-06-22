@@ -12,8 +12,7 @@ A = VoronoiCells.voronoiarea(x, y; rw=[LEFT; RIGHT; LOWER; UPPER])
 
 
 # ------------------------------------------------------------
-# I trust Deldir: With the corner points added, VoronoiCells and
-# Deldir shoud return the same tesselation
+# Compare with Deldir
 
 if !isa(Pkg.installed("Deldir"), Void)
 	using Deldir
