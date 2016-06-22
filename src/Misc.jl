@@ -60,3 +60,28 @@ function quadrant(p::AbstractPoint2D)
 	return Q
 end
 
+@doc """
+	fit2boundingbox(x::Vector, y::Vector; ...) -> Points2D, Float, Float
+
+Scale `x` and `y` to be in the GeometricalPredicates window [1,2]x[1,2].
+Return a vector of `Point2D`'s and the scaling factors applied in each
+dimension.
+
+As an optional argument the bounding box of `x` and `y` can be changed
+from the unit square.
+"""->
+function fit2boundingbox(x::Vector{Float64}, y::Vector{Float64}, rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
+	@assert (N = length(x)) == length(y)
+
+	RW_LEFT = rw[1]
+	RW_LOWER = rw[3]
+	@assert minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4]
+
+	SCALEX = rw[2] - RW_LEFT
+	SCALEY = rw[4] - RW_LOWER
+
+	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/SCALEX, LOWER + (y[n]-RW_LOWER)/SCALEY, n) for n = 1:N]
+
+	return pts, SCALEX, SCALEY
+end
+

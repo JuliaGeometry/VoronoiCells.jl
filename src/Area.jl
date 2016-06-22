@@ -7,18 +7,7 @@ The vector `rw` specifies the boundary rectangle as `[xmin, xmax, ymin, ymax]`.
 By default, `rw` is the unit rectangle.
 """->
 function voronoiarea(x::Vector{Float64}, y::Vector{Float64}; rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
-	@assert (N = length(x)) == length(y)
-
-	# Scale x and y to fit the window from GeometricalPredicates
-	# TODO: Move this to separate function (also used in density)
-	const RW_LEFT = rw[1]
-	const RW_LOWER = rw[3]
-	@assert minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4]
-
-	const SCALEX = rw[2] - RW_LEFT
-	const SCALEY = rw[4] - RW_LOWER
-
-	pts = [IndexablePoint2D( LEFT + (x[n]-RW_LEFT)/SCALEX, LOWER + (y[n]-RW_LOWER)/SCALEY, n) for n = 1:N]
+	pts, SCALEX, SCALEY = fit2boundingbox(x, y, rw)
 
 	# Areas for scaled points
 	C = vcorners(pts)

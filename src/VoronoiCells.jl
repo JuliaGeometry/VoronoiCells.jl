@@ -13,6 +13,7 @@ export
 	voronoiarea,
 	polyarea,
 	clip,
+	density,
 	large2small,
 	small2large
 
@@ -21,6 +22,6 @@ include("Clipping.jl")
 include("Corners.jl")
 include("Area.jl")
 include("Misc.jl")
-#include("Density.jl")
+include("Density.jl")
 
 end # module
