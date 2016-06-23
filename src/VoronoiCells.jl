@@ -6,18 +6,22 @@ import VoronoiDelaunay: getx, gety, getgena, getgenb
 export
 	# Types
 	IndexablePoint2D,
-	IndexedPolygon,
+	Tessellation,
 
 	# Functions
-	corners,
+	voronoicells,
 	voronoiarea,
 	polyarea,
-	density
+	clip,
+	density,
+	large2small,
+	small2large
 
 include("Types.jl")
+include("Area.jl")
 include("Clipping.jl")
 include("Corners.jl")
-include("Area.jl")
-#include("Density.jl")
+include("Density.jl")
+include("Misc.jl")
 
 end # module

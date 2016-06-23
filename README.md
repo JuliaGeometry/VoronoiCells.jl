@@ -6,43 +6,79 @@
 *VoronoiCells* use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices and areas of the Voronoi cells in a tessellation.
 
 
-## Usage
-
-To be able to tie the vertices of a cell to its generator point, a new 2D point type is introduced with an index: `IndexablePoint2D`.
-(This type *may* be included in VoronoiDelaunay, cf. [issue #15](https://github.com/JuliaGeometry/VoronoiDelaunay.jl/issues/15))
-
-For convenience, plural versions of different 2D point types are also introduced (`AbstractPoints2D`, `IndexablePoints2D` and `Points2D`).
-
-The main function is `corners` that returns the vertices of the Voronoi cells for a vector of `IndexablePoint2D`s:
-
-```julia
-pts = [IndexablePoint2D(1.0+rand(), 1.0+rand(), n) for n=1:10]
-C = corners(pts)
-```
-
-The output `C` is a `Dict` with integer keys, referring to the indices in `pts`, i.e., the corners of the n'th point in `pts` is accessed as `C[n]`.
-
-**Note**:
-For technical reasons `VoronoiDelaunay` includes the corner points of its allowed region in the set of generators.
-This creates unexpected edges in the Voronoi tessellation and the neighboring cells are *not* correct.
-To deal with these corner points, `C` contains the key -1 which holds the vertices of all corner cells.
-
-A couple of functions are available for computing areas:
-
-- `polyarea` which computes the area of a polygon from its vertices using the [shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula)
-- `voronoiarea` for a `Dict` of polygons as the output from `corners` that computes the area for each polygon.
-- `voronoiarea(x,y)` for vectors `x` and `y`.
-
-The latter `voronoiarea` is to allow general point configurations instead of only those in `[1,2] x [1,2]`.
-
-**Note**: Due to the issue with the boundary corners mentioned above, `voronoiarea` does not yield correct areas for cells that border the corners.
-
-
 ## Installation
 
-*VoronoiCells* is not registered (yet), so install using 
+In Julia, run
 
 ```julia
-Pkg.clone("https://github.com/robertdj/VoronoiCells.jl")
+Pkg.add("VoronoiCells")
 ```
+
+At the time of writing, the latest *official/tagged* version of VoronoiDelaunay does not provide correct results for *VoronoiCells*, so you need to checkout the latest version:
+
+```julia
+Pkg.checkout("VoronoiDelaunay")
+```
+
+(To undo this checkout, run `Pkg.free("VoronoiDelaunay")`.)
+
+
+## Usage
+
+The two main functions of *VoronoiCells* are `voronoicells` and `voronoiarea`.
+Both functions have a method where the input is a vector of `IndexablePoint2D`'s -- a subtype of the `AbstractPoint2D` from the [GeometricalPredicates](https://github.com/JuliaGeometry/GeometricalPredicates.jl) package.
+Such a vector can be created with e.g.
+
+```julia
+using VoronoiCells
+pts = [IndexablePoint2D(1+rand(), 1+rand(), n) for n in 1:10]
+```
+
+Note that an `AbstractPoint2D` must be in [1,2]x[1,2].
+The last entry in an `IndexablePoint2D` is used to associate it with the corners of its Voronoi cells in the output from `voronoicells`:
+
+```julia
+C = voronoicells(pts)
+```
+
+`C` is a Dict where the keys are integers representing the indices of the generator points in `pts` and `C[n]` is a vector with the corners of the `n`'th Voronoi cell.
+
+The function `voronoiarea` computes the areas of a point set *in the same order as the input*. 
+I.e., in
+
+```julia
+A = voronoiarea(pts)
+```
+
+`A[n]` is the area of the `IndexablePoint2D` with index `n`.
+There is also a method of `voronoiarea` that accepts two vectors with `x` and `y` coordinates, respectively.
+If `x` and `y` have entries that are *not* in the unit square a suitable bounding box must be specified.
+
+```julia
+x = rand(10)
+y = rand(10)
+A = voronoiarea(x,y)
+```
+
+The window is specified as a vector with `[xmin, xmax, ymin, ymax]`.
+Consider e.g. points in the rectangle [0,1]x[-1,1]:
+
+```julia
+x = rand(10)
+y = 2*rand(10) - 1
+A = voronoiarea(x, y, [0.0, 1.0, -1.0, 1.0])
+```
+
+A third function is `density`.
+If one wish to cover the bounding box with cirlces of equal radii and centers specified by vectors `x` and `y`, `density(x,y)` returns the minimum such radii.
+Just as in `voronoiarea` the default bounding box is the unit square and a different box can be specified as a third argument.
+
+
+## Note
+
+For technical reasons (that I don't fully understand) VoronoiDelaunay includes the corner points of the default bounding box, i.e., (1,1), (2,1), (2,2) and (1,2) in the set of generators.
+This means that these corners also get their own Voronoi cell and the cells of the generators closest to the corners are a priori *incorrect*.
+
+The way *VoronoiCells* removes the corner cells and update the affected neighbor cells are explained in the [enclosed doc](doc/remove_bounding_box.md).
+The `doc` folder also includes the script `plots.jl` used to make the plots in the document.
 
