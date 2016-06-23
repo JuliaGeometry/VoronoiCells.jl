@@ -45,11 +45,11 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 end
 
 @doc """
-	vcorners(generators::IndexablePoints2D) -> Tessellation
+	voronoicells(generators::IndexablePoints2D) -> Tessellation
 
 Collect the Voronoi cells from a set of `generators`.
 """->
-function vcorners(generators::IndexablePoints2D)
+function voronoicells(generators::IndexablePoints2D)
 	# Transform points to the middle square
 	tgen = large2small(generators)
 

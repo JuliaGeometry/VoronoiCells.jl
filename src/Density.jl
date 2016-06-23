@@ -9,7 +9,7 @@ By definition of the Voronoi tesselation this radius is the maximum
 distance from a Voronoi cell vertix to its generator.
 """->
 function density(generators::IndexablePoints2D)
-	corn = vcorners(generators)
+	corn = voronoicells(generators)
 	density(generators, corn)
 end
 

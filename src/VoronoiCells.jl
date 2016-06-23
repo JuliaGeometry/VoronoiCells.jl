@@ -9,7 +9,7 @@ export
 	Tessellation,
 
 	# Functions
-	vcorners,
+	voronoicells,
 	voronoiarea,
 	polyarea,
 	clip,
@@ -18,10 +18,10 @@ export
 	small2large
 
 include("Types.jl")
+include("Area.jl")
 include("Clipping.jl")
 include("Corners.jl")
-include("Area.jl")
-include("Misc.jl")
 include("Density.jl")
+include("Misc.jl")
 
 end # module
