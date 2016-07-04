@@ -14,13 +14,17 @@ In Julia, run
 Pkg.add("VoronoiCells")
 ```
 
-At the time of writing, the latest *official/tagged* version of VoronoiDelaunay does not provide correct results for *VoronoiCells*, so you need to checkout the latest version:
+At the time of writing, the latest *official/tagged* versions of VoronoiDelaunay and [GeometricalPredicates](https://github.com/JuliaGeometry/GeometricalPredicates.jl) do not provide correct results for *VoronoiCells*.
+After installation *VoronoiCells* checks out the latest version of these packages with the script `deps/build.jl`.
+
+If this fails you can manually run 
 
 ```julia
 Pkg.checkout("VoronoiDelaunay")
+Pkg.checkout("GeometricalPredicates")
 ```
 
-(To undo this checkout, run `Pkg.free("VoronoiDelaunay")`.)
+(To undo these checkouts, run `Pkg.free("VoronoiDelaunay")`.)
 
 
 ## Usage
@@ -70,7 +74,7 @@ A = voronoiarea(x, y, [0.0, 1.0, -1.0, 1.0])
 ```
 
 A third function is `density`.
-If one wish to cover the bounding box with cirlces of equal radii and centers specified by vectors `x` and `y`, `density(x,y)` returns the minimum such radii.
+If one wish to cover the bounding box with cirlces of equal radii and centers specified by vectors `x` and `y`, `density(x,y)` returns the minimum such radius.
 Just as in `voronoiarea` the default bounding box is the unit square and a different box can be specified as a third argument.
 
 
@@ -79,6 +83,6 @@ Just as in `voronoiarea` the default bounding box is the unit square and a diffe
 For technical reasons (that I don't fully understand) VoronoiDelaunay includes the corner points of the default bounding box, i.e., (1,1), (2,1), (2,2) and (1,2) in the set of generators.
 This means that these corners also get their own Voronoi cell and the cells of the generators closest to the corners are a priori *incorrect*.
 
-The way *VoronoiCells* removes the corner cells and update the affected neighbor cells are explained in the [enclosed doc](doc/remove_bounding_box.md).
+The way *VoronoiCells* removes the corner cells and update the affected neighbor cells are explained in the [attached document](doc/remove_bounding_box.md).
 The `doc` folder also includes the script `plots.jl` used to make the plots in the document.
 
