@@ -2,12 +2,12 @@ using VoronoiDelaunay
 using VoronoiCells
 using Winston
 
-#= N = 15 =#
-#= x = 1.0 + rand(N) =#
-#= y = 1.0 + rand(N) =#
-#= tess1 = DelaunayTessellation2D{IndexablePoint2D}() =#
-#= pts1 = [IndexablePoint2D(x[n], y[n], n) for n=1:N] =#
-#= push!(tess1, pts1) =#
+N = 15
+x = 1.0 + rand(N)
+y = 1.0 + rand(N)
+tess1 = DelaunayTessellation2D{IndexablePoint2D}()
+pts1 = [IndexablePoint2D(x[n], y[n], n) for n=1:N]
+push!(tess1, pts1)
 
 
 # ----------------------------------------------------------------------
@@ -56,8 +56,8 @@ savefig("tess_nocorner.png")
 # Both tesselations
 
 
-oplot(Vx1, Vy1)
+#oplot(Vx1, Vy1)
 
 #display(p2)
-savefig("tess_combined.png")
+#savefig("tess_combined.png")
 
