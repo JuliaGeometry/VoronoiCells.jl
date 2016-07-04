@@ -70,7 +70,7 @@ dimension.
 As an optional argument the bounding box of `x` and `y` can be changed
 from the unit square.
 """->
-function fit2boundingbox(x::Vector{Float64}, y::Vector{Float64}, rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
+function fit2boundingbox(x::AbstractVector{Float64}, y::AbstractVector{Float64}, rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
 	(N = length(x)) == length(y) || throw(DimensionMismatch())
 
 	RW_LEFT = rw[1]
