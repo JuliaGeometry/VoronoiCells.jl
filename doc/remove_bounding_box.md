@@ -5,7 +5,7 @@ Removing the corners of the bounding box
 
 In VoronoiDelaunay all generators reside inside the square [1,2]x[1,2] and the four corners of this square are always included as generators.
 This of course adds four extra cells (here denoted "corner cells") to the tessellation and the cells bordering the corner cells are *incorrect*.
-In the example below the cells belonging to the points 2, 4, 5, 11, 12, 13, 14, 15 are affected.
+In the example below the cells belonging to the points 1, 2, 3 (upper right), 2, 12, 14 (upper left), 5, 6 (lower left) and 8 (lower right) are affected.
 
 ![Tesselation with corner generators](tess_corner.png)
 
@@ -22,4 +22,8 @@ Transforming the generators and their Voronoi cells back to the full square [1,2
 ![Correct Voronoi tessellation](tess_nocorner.png)
 
 The line segments making up the Voronoi cells are a priori not restricted to the bounding box and *VoronoiCells* use the [Liang-Barsky algorithm](https://en.wikipedia.org/wiki/Liang%E2%80%93Barsky_algorithm) to compute the intersection between a line segment and the bounding box.
+
+One final correction after computing the correct line segments is to assign the corners to the correct cells.
+In the examples above the upper right corner belongs the cell of point 1. 
+This is determined by keeping track of the cells neighboring the corner points during the line segment computation and afterwards determine the appropriate generator by calculating the distance between a corner and each of its former neighbor generators.
 
