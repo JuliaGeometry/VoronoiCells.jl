@@ -15,9 +15,7 @@ Pkg.add("VoronoiCells")
 ```
 
 At the time of writing, the latest *official/tagged* versions of VoronoiDelaunay and [GeometricalPredicates](https://github.com/JuliaGeometry/GeometricalPredicates.jl) do not provide correct results for *VoronoiCells*.
-After installation *VoronoiCells* checks out the latest version of these packages with the script `deps/build.jl`.
-
-If this fails you can manually run 
+Therefore, after installation of *VoronoiCells* you must check out the latest version of these packages:
 
 ```julia
 Pkg.checkout("VoronoiDelaunay")
