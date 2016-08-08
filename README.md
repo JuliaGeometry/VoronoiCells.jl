@@ -14,16 +14,6 @@ In Julia, run
 Pkg.add("VoronoiCells")
 ```
 
-At the time of writing, the latest *official/tagged* versions of VoronoiDelaunay and [GeometricalPredicates](https://github.com/JuliaGeometry/GeometricalPredicates.jl) do not provide correct results for *VoronoiCells*.
-Therefore, after installation of *VoronoiCells* you must check out the latest version of these packages:
-
-```julia
-Pkg.checkout("VoronoiDelaunay")
-Pkg.checkout("GeometricalPredicates")
-```
-
-(To undo these checkouts, run `Pkg.free("VoronoiDelaunay")`.)
-
 
 ## Usage
 

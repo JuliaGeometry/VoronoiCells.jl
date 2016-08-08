@@ -3,16 +3,15 @@ language: julia
 os:
   - linux
 julia:
-  - 0.4.5
+  - 0.4
 notifications:
   email: false
+# Deldir needed for testing; Deldir needs Fortran
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y gfortran
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.add("VoronoiDelaunay"); Pkg.checkout("VoronoiDelaunay")'
-  - julia -e 'Pkg.add("GeometricalPredicates"); Pkg.checkout("GeometricalPredicates")'
   - julia -e 'Pkg.clone(pwd()); Pkg.build("VoronoiCells"); Pkg.test("VoronoiCells"; coverage=true)'
 after_success:
    - julia -e 'cd(Pkg.dir("VoronoiCells")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
