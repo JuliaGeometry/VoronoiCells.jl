@@ -39,7 +39,7 @@ The function `voronoiarea` computes the areas of a point set *in the same order 
 I.e., in
 
 ```julia
-A = voronoiarea(pts)
+A = voronoiarea(C)
 ```
 
 `A[n]` is the area of the `IndexablePoint2D` with index `n`.
