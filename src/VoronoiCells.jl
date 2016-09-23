@@ -1,5 +1,7 @@
 module VoronoiCells
 
+using Compat
+
 using VoronoiDelaunay
 import VoronoiDelaunay: getx, gety, getgena, getgenb
 

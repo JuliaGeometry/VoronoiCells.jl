@@ -77,9 +77,7 @@ for op in [:+,:-]
 	end
 end
 
-function Base.(:*)(a::Float64, p::AbstractPoint2D)
-	Point2D( a*getx(p), a*gety(p) )
-end
+@compat Base.:*(a::Float64, p::AbstractPoint2D) = Point2D( a*getx(p), a*gety(p) )
 
 # sorting for AbstractPoints2D
 for name in [:sort!,:issorted]

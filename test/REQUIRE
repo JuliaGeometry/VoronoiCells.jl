@@ -1,3 +1,4 @@
 julia 0.4
 VoronoiDelaunay 0.0.3
 Deldir 0.0.3
+Compat
