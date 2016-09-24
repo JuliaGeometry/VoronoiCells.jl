@@ -1,5 +1,5 @@
 julia 0.4
-GeometricalPredicates 0.0.5 0.05
+GeometricalPredicates 0.0.5
 VoronoiDelaunay 0.0.3
 Deldir 0.0.3
 Compat 0.8.4
