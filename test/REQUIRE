@@ -1,5 +1,5 @@
 julia 0.4
 VoronoiDelaunay 0.1.0
-Deldir 0.0.3
+Deldir 0.0.3 1.0.0
 Compat 0.8.4
 BaseTestNext 0.2.2
