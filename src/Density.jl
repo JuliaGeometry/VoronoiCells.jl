@@ -35,7 +35,9 @@ Compute the density for points with coordinates `x` and `y` in the window `rw`.
 The vector `rw` specifies the boundary rectangle as `[xmin, xmax, ymin, ymax]`.
 By default, `rw` is the unit rectangle.
 """
-function density{T<:Real}(x::AbstractVector{T}, y::AbstractVector{T}, rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
+function density(x::AbstractVector{<:Real}, 
+				 y::AbstractVector{<:Real}, 
+				 rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
 	pts, SCALEX, SCALEY = fit2boundingbox(x, y, rw)
 
 	density(pts) * sqrt(SCALEX*SCALEY)

@@ -7,9 +7,9 @@ If `generator` is already in `corners`, the entry in `corners` is updated with `
 function newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::AbstractPoint2D)
 	index = getindex(generator)
 
-	if haskey( corners, index )
+	if haskey(corners, index)
 		if !contains(corners[index], corner)
-			push!( corners[index], corner )
+			push!(corners[index], corner)
 		end
 	else
 		corners[index] = [ corner ]

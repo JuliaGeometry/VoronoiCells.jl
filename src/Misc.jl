@@ -12,7 +12,7 @@ end
 
 Test if the point `p` is in the vector of points `pts`.
 """
-function Base.contains{T<:AbstractPoint2D}(pts::Vector{T}, p::AbstractPoint2D)
+function Base.contains(pts::Vector{<:AbstractPoint2D}, p::AbstractPoint2D)
 	for element in pts
 		if isapprox(p, element)
 			return true
