@@ -1,3 +1,2 @@
-julia 0.4
-VoronoiDelaunay 0.1.0
-Compat 0.8.4
+julia 0.6
+VoronoiDelaunay 0.2.0

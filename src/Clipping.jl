@@ -1,11 +1,11 @@
-@doc """
+"""
 	clip(A::AbstractPoint2D, B::AbstractPoint2D) -> C, D
 
 Clip the line segment with endpoints `A` and `B` to the bounding box.
 The returned points `C` and `D` are the endpoints of the intersection.
 
 If the line segment is not intersecting the bounding box, both `C` and `D` are `Void`.
-"""->
+"""
 function clip(A::AbstractPoint2D, B::AbstractPoint2D)
 	# TODO: Use Line2D from GeometricalPredicates as input?
 	if isinside(A) && isinside(B)
@@ -46,20 +46,20 @@ function clip(A::AbstractPoint2D, B::AbstractPoint2D)
 end
 
 
-@doc """
+"""
 	isinside(p::Point2D) -> Bool
 
 Test if the point `p` is inside the bounding box.
-"""->
+"""
 function isinside(p::AbstractPoint2D)
 	LEFT <= getx(p) <= RIGHT && LOWER <= gety(p) <= UPPER
 end
 
-@doc """
+"""
 	isoutside(edge::VoronoiEdge) -> Bool
 
 Test if `edge` intersects the bounding box. 
-"""->
+"""
 function isoutside(edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
 	A, B = clip( geta(edge), getb(edge) )
 

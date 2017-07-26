@@ -1,27 +1,27 @@
-@doc """
+"""
 	newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::Point2D)
 
 Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
 If `generator` is already in `corners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
-"""->
+"""
 function newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::AbstractPoint2D)
 	index = getindex(generator)
 
-	if haskey( corners, index )
+	if haskey(corners, index)
 		if !contains(corners[index], corner)
-			push!( corners[index], corner )
+			push!(corners[index], corner)
 		end
 	else
 		corners[index] = [ corner ]
 	end
 end
 
-@doc """
+"""
 	newedge!(corners::Tessellation, edge::VoronoiEdge)
 
 Update `corners` with the corners of `edge`.
 See also `newcorner!`.
-"""->
+"""
 function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{IndexablePoint2D})
 	# TODO: Import edge type?
 
@@ -44,11 +44,11 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 	newcorner!(corners, generator, B)
 end
 
-@doc """
+"""
 	voronoicells(generators::IndexablePoints2D) -> Tessellation
 
 Collect the Voronoi cells from a set of `generators`.
-"""->
+"""
 function voronoicells(generators::IndexablePoints2D)
 	# Transform points to the middle square
 	tgen = large2small(generators)
@@ -76,12 +76,12 @@ function voronoicells(generators::IndexablePoints2D)
 	return corn
 end
 
-@doc """
+"""
 `Q` is a `Dict` with keys 1 through 4 representing the four quadrants of the bounding box.
 The points with cells that border quadrant `q` are `Q[q]`.
 
 This function may include too many points, but not so many that it is important for the performance.
-"""->
+"""
 function quadrant!{T<:AbstractPoint2D}(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T})
 	# TODO: Should test if edge is outside the middle square/map edge to
 	# full square. Mapping takes time and the clip functions needs to be
@@ -103,12 +103,12 @@ function quadrant!{T<:AbstractPoint2D}(Q::Dict{Int64, Vector{Int64}}, edge::Voro
 	end
 end
 
-@doc """
+"""
 	add_bounding_corners!(corn, generators, Q)
 
 Adds each of the quadrants to the cell in the tesselation `corn` whose generator is closest.
 `Q` holds the indices of the cells that border the bounding box corners (see `quadrant!`).
-"""->
+"""
 function add_bounding_corners!(corn::Tessellation, generators::IndexablePoints2D, Q)
 	sort!(generators, by=getindex)
 

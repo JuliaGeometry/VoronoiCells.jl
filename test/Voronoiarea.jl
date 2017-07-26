@@ -22,7 +22,7 @@ end
 
 	# ------------------------------------------------------------
 	# Compare with Deldir
-	A2 = Deldir.voronoiarea(x, y; rw=[LEFT; RIGHT; LOWER; UPPER])
-	@test_approx_eq A A2
+	A2 = Deldir.voronoiarea(x, y, [LEFT; RIGHT; LOWER; UPPER])
+	@test A ≈ A2
 end
 

@@ -1,4 +1,4 @@
-@doc """
+"""
 	density(pts::IndexablePoints2D) -> Real
 
 Here density is defined as the minimum radius of a covering of
@@ -7,7 +7,7 @@ points in `pts`.
 
 By definition of the Voronoi tesselation this radius is the maximum
 distance from a Voronoi cell vertix to its generator.
-"""->
+"""
 function density(generators::IndexablePoints2D)
 	corn = voronoicells(generators)
 	density(generators, corn)
@@ -27,15 +27,17 @@ function density(generators::IndexablePoints2D, corners::Tessellation)
 	return sqrt(dens)
 end
 
-@doc """
+"""
 	density(x::Vector, y::Vector; rw) -> Real
 
 Compute the density for points with coordinates `x` and `y` in the window `rw`.
 
 The vector `rw` specifies the boundary rectangle as `[xmin, xmax, ymin, ymax]`.
 By default, `rw` is the unit rectangle.
-"""->
-function density{T<:Real}(x::AbstractVector{T}, y::AbstractVector{T}, rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
+"""
+function density(x::AbstractVector{<:Real}, 
+				 y::AbstractVector{<:Real}, 
+				 rw::Vector{Float64}=[0.0;1.0;0.0;1.0])
 	pts, SCALEX, SCALEY = fit2boundingbox(x, y, rw)
 
 	density(pts) * sqrt(SCALEX*SCALEY)

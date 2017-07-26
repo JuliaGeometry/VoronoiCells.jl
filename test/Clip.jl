@@ -2,12 +2,7 @@ using VoronoiCells
 import VoronoiCells: LEFT, RIGHT, LOWER, UPPER
 using VoronoiDelaunay
 
-if VERSION >= v"0.5.0"
-	using Base.Test
-else
-	using BaseTestNext
-	const Test = BaseTestNext
-end
+using Base.Test
 
 @testset "Clipping lines" begin
 	# ------------------------------------------------------------
