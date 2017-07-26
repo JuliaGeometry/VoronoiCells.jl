@@ -41,6 +41,6 @@ using Base.Test
 	slope1 = (gety(A)-gety(B)) / (getx(A)-getx(B))
 	slope2 = (gety(C)-gety(D)) / (getx(C)-getx(D))
 
-	@test_approx_eq slope1 slope2
+	@test slope1 ≈ slope2
 end
 
