@@ -1,4 +1,4 @@
-immutable IndexablePoint2D <: AbstractPoint2D
+struct IndexablePoint2D <: AbstractPoint2D
     _x::Float64
     _y::Float64
     _index::Int64
