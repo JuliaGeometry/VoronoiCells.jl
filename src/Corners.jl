@@ -82,7 +82,7 @@ The points with cells that border quadrant `q` are `Q[q]`.
 
 This function may include too many points, but not so many that it is important for the performance.
 """
-function quadrant!{T<:AbstractPoint2D}(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T})
+function quadrant!(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T}) where T<:AbstractPoint2D
 	# TODO: Should test if edge is outside the middle square/map edge to
 	# full square. Mapping takes time and the clip functions needs to be
 	# modified to test in the middle square.

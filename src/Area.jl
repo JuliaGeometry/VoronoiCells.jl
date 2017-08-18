@@ -82,7 +82,7 @@ Base.:*(a::Float64, p::AbstractPoint2D) = Point2D( a*getx(p), a*gety(p) )
 # sorting for AbstractPoints2D
 for name in [:sort!,:issorted]
 	@eval begin
-		function Base.$name{T<:AbstractPoint2D}(pts::Vector{T})
+		function Base.$name(pts::Vector{T}) where T<:AbstractPoint2D
 			center = mean(pts)
 			centralize = p -> p - center
 			$name( pts, by=centralize )
