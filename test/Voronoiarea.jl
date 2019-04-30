@@ -1,7 +1,5 @@
-using VoronoiCells
 import VoronoiCells: LEFT, RIGHT, LOWER, UPPER
 using Deldir
-using Test
 
 @testset "Area of Voronoi cells" begin
 	N = 100
