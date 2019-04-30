@@ -18,3 +18,10 @@ using Deldir
 	@test A ≈ A2
 end
 
+
+@testset "Errors with Voronoi cells" begin
+	x = RIGHT .+ rand(8)
+	y = UPPER .+ rand(8)
+
+	@test_throws DomainError VoronoiCells.voronoiarea(x, y)
+end

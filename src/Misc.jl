@@ -75,7 +75,7 @@ function fit2boundingbox(x::AbstractVector{Float64}, y::AbstractVector{Float64},
 
 	RW_LEFT = rw[1]
 	RW_LOWER = rw[3]
-	minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4] || throw(DomainError())
+	minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4] || throw(DomainError(x))
 
 	SCALEX = rw[2] - RW_LEFT
 	SCALEY = rw[4] - RW_LOWER
