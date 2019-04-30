@@ -1,5 +1,5 @@
 using VoronoiCells
-using Base.Test
+using Test
 
 @testset "Density" begin
 	# Corners of the unit square

@@ -2,7 +2,7 @@ using VoronoiCells
 import VoronoiCells: LEFT, RIGHT, LOWER, UPPER
 using VoronoiDelaunay
 
-using Base.Test
+using Test
 
 @testset "Clipping lines" begin
 	# ------------------------------------------------------------

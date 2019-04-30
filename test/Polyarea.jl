@@ -1,7 +1,7 @@
 using VoronoiCells
 import VoronoiCells: LEFT, RIGHT, LOWER, UPPER
 using VoronoiDelaunay
-using Base.Test
+using Test
 
 @testset "Area of polygons" begin
 	# Area of square
