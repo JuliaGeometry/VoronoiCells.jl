@@ -1,2 +1,2 @@
-julia 0.6
-VoronoiDelaunay 0.2.0
+julia 1.0
+VoronoiDelaunay 0.3.1
