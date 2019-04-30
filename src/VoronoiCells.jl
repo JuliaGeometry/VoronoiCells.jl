@@ -1,7 +1,7 @@
 module VoronoiCells
 
-using VoronoiDelaunay
-import VoronoiDelaunay: getx, gety, getgena, getgenb
+import VoronoiDelaunay
+import VoronoiDelaunay: getx, gety, geta, getb, getgena, getgenb
 
 export
 	# Types

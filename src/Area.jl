@@ -13,7 +13,8 @@ function voronoiarea(x::AbstractVector{Float64}, y::AbstractVector{Float64}, rw:
 	C = voronoicells(pts)
 	A = voronoiarea(C)
 
-	scale!(A, SCALEX*SCALEY)
+	# scale!(A, SCALEX*SCALEY)
+	A .*= SCALEX*SCALEY
 
 	return A
 end
@@ -27,10 +28,10 @@ Note that if the polygons of `C` are not ordered, they will be changed in-place.
 """
 function voronoiarea(C::Tessellation)
 	NC = length(C)
-	A = Array{Float64}(NC)
+	A = Array{Float64}(undef, NC)
 
 	for n in 1:NC
-		A[n] = polyarea( C[n] )
+		A[n] = polyarea(C[n])
 	end
 
 	return A
@@ -42,7 +43,7 @@ end
 Compute the area of the polygon with vertices `p` using the shoelace formula.  
 If the points in `p` are not sorted, they will be sorted **in-place**.
 """
-function polyarea(pts::Vector{<:AbstractPoint2D})
+function polyarea(pts::Vector{<:VoronoiDelaunay.AbstractPoint2D})
 	issorted(pts) || sort!(pts)
 
 	Np = length(pts)
@@ -56,7 +57,7 @@ function polyarea(pts::Vector{<:AbstractPoint2D})
 end
 
 # Compute the average point of pts
-function Base.mean(pts::Vector{<:AbstractPoint2D})
+function mean(pts::Vector{<:VoronoiDelaunay.AbstractPoint2D})
 	# Average point
 	ax = 0.0
 	ay = 0.0
@@ -67,22 +68,22 @@ function Base.mean(pts::Vector{<:AbstractPoint2D})
 	end
 
 	Np = length(pts)
-	Point2D(ax/Np, ay/Np)
+	VoronoiDelaunay.Point2D(ax/Np, ay/Np)
 end
 
 # Addition and subtraction for AbstractPoint2D
-for op in [:+,:-]
+for op in [:+, :-]
 	@eval begin
-		Base.$op(p::AbstractPoint2D, q::AbstractPoint2D) = Point2D( $op(getx(p), getx(q)), $op(gety(p), gety(q)) )
+		Base.$op(p::VoronoiDelaunay.AbstractPoint2D, q::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D( $op(getx(p), getx(q)), $op(gety(p), gety(q)) )
 	end
 end
 
-Base.:*(a::Float64, p::AbstractPoint2D) = Point2D( a*getx(p), a*gety(p) )
+Base.:*(a::Float64, p::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D( a*getx(p), a*gety(p) )
 
 # sorting for AbstractPoints2D
 for name in [:sort!,:issorted]
 	@eval begin
-		function Base.$name(pts::Vector{T}) where T<:AbstractPoint2D
+		function Base.$name(pts::Vector{T}) where T<:VoronoiDelaunay.AbstractPoint2D
 			center = mean(pts)
 			centralize = p -> p - center
 			$name( pts, by=centralize )
@@ -91,7 +92,7 @@ for name in [:sort!,:issorted]
 end
 
 # http://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order
-function Base.isless(p::AbstractPoint2D, q::AbstractPoint2D)
+function Base.isless(p::VoronoiDelaunay.AbstractPoint2D, q::VoronoiDelaunay.AbstractPoint2D)
 	if getx(p) >= 0.0 && getx(q) < 0.0
 		return true
 	elseif getx(p) < 0.0 && getx(q) >= 0.0
@@ -113,7 +114,7 @@ function Base.isless(p::AbstractPoint2D, q::AbstractPoint2D)
 
 	# p and q are on the same line from the center; check which one is
 	# closer to the origin
-	origin = Point2D(0.0, 0.0)
+	origin = VoronoiDelaunay.Point2D(0.0, 0.0)
 	dist_squared(p,origin) > dist_squared(q,origin)
 end
 
