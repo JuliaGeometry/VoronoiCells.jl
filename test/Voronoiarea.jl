@@ -9,7 +9,7 @@ using Deldir
 	A = VoronoiCells.voronoiarea(x, y, [LEFT; RIGHT; LOWER; UPPER])
 	# For most realizations |sum(A) - 1| is approx 10^{-15} and easily
 	# passing the test. Occasionally it fails with sum(A) = 0.999x, where x != 9
-	@test isapprox(sum(A), 1; atol=1e-4)
+	@test isapprox(sum(A), 1, atol = 1e-4)
 
 
 	# ------------------------------------------------------------
