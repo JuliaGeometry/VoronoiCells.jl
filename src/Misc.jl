@@ -3,7 +3,7 @@
 
 Test if the two points `a` and `b` are approximately equal in the `l1`-norm.
 """
-function Base.isapprox(a::AbstractPoint2D, b::AbstractPoint2D)
+function Base.isapprox(a::VoronoiDelaunay.AbstractPoint2D, b::VoronoiDelaunay.AbstractPoint2D)
 	isapprox(getx(a), getx(b)) && isapprox(gety(a), gety(b))
 end
 
@@ -12,7 +12,7 @@ end
 
 Test if the point `p` is in the vector of points `pts`.
 """
-function Base.contains(pts::Vector{<:AbstractPoint2D}, p::AbstractPoint2D)
+function contains(pts::Vector{<:VoronoiDelaunay.AbstractPoint2D}, p::VoronoiDelaunay.AbstractPoint2D)
 	for element in pts
 		if isapprox(p, element)
 			return true
@@ -26,7 +26,7 @@ end
 
 The `l2` distance squared between the points `p` and `q`.
 """
-function dist_squared(p::AbstractPoint2D, q::AbstractPoint2D)
+function dist_squared(p::VoronoiDelaunay.AbstractPoint2D, q::VoronoiDelaunay.AbstractPoint2D)
 	(getx(p)-getx(q))^2 + (gety(p)-gety(q))^2 
 end
 
@@ -43,7 +43,7 @@ right and consecutively with positive orientation:
 * 3 is the lower left
 * 4 is the lower right
 """
-function quadrant(p::AbstractPoint2D)
+function quadrant(p::VoronoiDelaunay.AbstractPoint2D)
 	isleft = getx(p) < MIDDLEx
 	islow = gety(p) < MIDDLEy
 
@@ -75,7 +75,7 @@ function fit2boundingbox(x::AbstractVector{Float64}, y::AbstractVector{Float64},
 
 	RW_LEFT = rw[1]
 	RW_LOWER = rw[3]
-	minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4] || throw(DomainError())
+	minimum(x) >= RW_LEFT && maximum(x) <= rw[2] && minimum(y) >= RW_LOWER && maximum(y) <= rw[4] || throw(DomainError(x))
 
 	SCALEX = rw[2] - RW_LEFT
 	SCALEY = rw[4] - RW_LOWER

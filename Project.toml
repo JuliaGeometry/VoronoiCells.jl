@@ -1,0 +1,14 @@
+name = "VoronoiCells"
+uuid = "d4169bfe-685e-11e9-1a79-8de72811366c"
+authors = ["Robert DJ <git@dahl-jacobsen.dk>"]
+version = "0.1.0"
+
+[deps]
+VoronoiDelaunay = "72f80fcb-8c52-57d9-aff0-40c1a3526986"
+
+[extras]
+Deldir = "64db5801-a3ae-51a7-b7d2-a0a5f0813e47"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test", "Deldir"]

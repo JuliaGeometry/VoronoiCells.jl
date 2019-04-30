@@ -4,7 +4,7 @@
 Update `corners` with a new `corner` of the cell belonging to a particular `generator`.
 If `generator` is already in `corners`, the entry in `corners` is updated with `corner` and otherwise a new cell is added.
 """
-function newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::AbstractPoint2D)
+function newcorner!(corners::Tessellation, generator::IndexablePoint2D, corner::VoronoiDelaunay.AbstractPoint2D)
 	index = getindex(generator)
 
 	if haskey(corners, index)
@@ -30,7 +30,7 @@ function newedge!(corners::Tessellation, edge::VoronoiDelaunay.VoronoiEdge{Index
 	B = small2large(getb(edge))
 	if !isinside(A) || !isinside(B)
 		A, B = clip(A, B)
-		if isa(A,Void) || isa(B,Void)
+		if isa(A, Nothing) || isa(B, Nothing)
 			return nothing
 		end
 	end
@@ -55,7 +55,7 @@ function voronoicells(generators::IndexablePoints2D)
 
 	# VoronoiDelaunay data structure
 	Ngen = length(tgen)
-	tess = DelaunayTessellation2D{IndexablePoint2D}(Ngen)
+	tess = VoronoiDelaunay.DelaunayTessellation2D{IndexablePoint2D}(Ngen)
 	push!(tess, tgen)
 
 	# Initialize output
@@ -65,7 +65,7 @@ function voronoicells(generators::IndexablePoints2D)
 	# Dict for indices of quadrant neighbors
 	Q = Dict{Int64, Vector{Int64}}(1=>[], 2=>[], 3=>[], 4=>[])
 
-	for edge in voronoiedges(tess)
+	for edge in VoronoiDelaunay.voronoiedges(tess)
 		newedge!(corn, edge)
 		quadrant!(Q, edge)
 	end
@@ -82,7 +82,7 @@ The points with cells that border quadrant `q` are `Q[q]`.
 
 This function may include too many points, but not so many that it is important for the performance.
 """
-function quadrant!(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T}) where T<:AbstractPoint2D
+function quadrant!(Q::Dict{Int64, Vector{Int64}}, edge::VoronoiDelaunay.VoronoiEdge{T}) where T<:VoronoiDelaunay.AbstractPoint2D
 	# TODO: Should test if edge is outside the middle square/map edge to
 	# full square. Mapping takes time and the clip functions needs to be
 	# modified to test in the middle square.
@@ -135,7 +135,7 @@ function large2small(pts::Vector{IndexablePoint2D})
 	[large2small(p) for p in pts]
 end
 
-function small2large(p::Point2D)
-	Point2D( 2.0*getx(p)-1.5, 2.0*gety(p)-1.5 )
+function small2large(p::VoronoiDelaunay.Point2D)
+	VoronoiDelaunay.Point2D( 2.0*getx(p)-1.5, 2.0*gety(p)-1.5 )
 end
 

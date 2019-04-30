@@ -1,6 +1,3 @@
-using VoronoiCells
-using Base.Test
-
 @testset "Density" begin
 	# Corners of the unit square
 	x = [1.0 ; 0.0 ; 0.0 ; 1.0]
