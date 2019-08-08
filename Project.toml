@@ -1,7 +1,7 @@
 name = "VoronoiCells"
 uuid = "d4169bfe-685e-11e9-1a79-8de72811366c"
 authors = ["Robert DJ <git@dahl-jacobsen.dk>"]
-version = "0.1.0"
+version = "0.1.5"
 
 [deps]
 VoronoiDelaunay = "72f80fcb-8c52-57d9-aff0-40c1a3526986"
