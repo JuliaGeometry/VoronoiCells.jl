@@ -4,6 +4,8 @@ struct IndexablePoint2D <: VoronoiDelaunay.AbstractPoint2D
     _index::Int64
 end
 
+getx(p::IndexablePoint2D) = p._x
+gety(p::IndexablePoint2D) = p._y
 Base.getindex(p::IndexablePoint2D) = p._index
 Base.getindex(::VoronoiDelaunay.Point2D) = -1
 
