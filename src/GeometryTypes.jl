@@ -53,7 +53,6 @@ end
 
 
 function map_rectangle(points, from::Rectangle, to::Rectangle)
-# function map_rectangle(points::Vector{GeometryBasics.Point2}, from::Rectangle, to::Rectangle)
     offsetx_from = left(from)
     offsety_from = lower(from)
 
@@ -65,7 +64,6 @@ function map_rectangle(points, from::Rectangle, to::Rectangle)
 
     no_points = length(points)
     transformed_points = Vector{IndexablePoint2D}(undef, no_points)
-    # transformed_points = similar(points)
     for (index, point) in enumerate(points)
         if !isinside(point, from)
             throw(error("Point is not inside rectangle"))
@@ -76,10 +74,6 @@ function map_rectangle(points, from::Rectangle, to::Rectangle)
             offsety_to + (point[2] - offsety_from) * slopey,
             index
         )
-        # transformed_points[index] = GeometryBasics.Point2D(
-        #     offsetx_to + (point[1] - offsetx_from) * slopex,
-        #     offsety_to + (point[2] - offsety_from) * slopey
-        # )
     end
 
     return transformed_points
