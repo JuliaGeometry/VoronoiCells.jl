@@ -14,8 +14,8 @@ julia = "1.5"
 
 [extras]
 Deldir = "64db5801-a3ae-51a7-b7d2-a0a5f0813e47"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "Deldir"]
-
+test = ["Test", "Deldir", "Random"]
