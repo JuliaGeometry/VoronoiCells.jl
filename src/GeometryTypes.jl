@@ -4,11 +4,50 @@ struct IndexablePoint2D <: VoronoiDelaunay.AbstractPoint2D
     _index::Int64
 end
 
-IndexablePoint2D(x::Float64, y::Float64) = IndexablePoint2D(x, y, -1)
+function Base.abs2(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoint2D)
+    abs2(getx(A) - getx(B)) + abs2(gety(A) - gety(B))
+end
+
+const BoundingBoxCorners = [
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.max_coord, VoronoiDelaunay.max_coord)
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.min_coord, VoronoiDelaunay.max_coord)
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.min_coord, VoronoiDelaunay.min_coord)
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.max_coord, VoronoiDelaunay.min_coord)
+]
+
+function closest_quadrant(p::VoronoiDelaunay.AbstractPoint2D)
+    closest_quadrant = 0
+    quadrant_dist = Inf
+    for n in 1:4
+        dist_to_corner = abs2(p, BoundingBoxCorners[n])
+        if dist_to_corner < quadrant_dist
+            closest_quadrant = n
+            quadrant_dist = min(quadrant_dist, dist_to_corner)
+        end
+    end
+
+    return closest_quadrant
+end
+
+# IndexablePoint2D(x::Float64, y::Float64) = IndexablePoint2D(x, y, -1)
+function IndexablePoint2D(x::Float64, y::Float64)
+    q = closest_quadrant(VoronoiDelaunay.Point2D(x, y))
+    IndexablePoint2D(x, y, -q)
+end
 getx(p::IndexablePoint2D) = p._x
 gety(p::IndexablePoint2D) = p._y
 Base.getindex(p::IndexablePoint2D) = p._index
 Base.getindex(::VoronoiDelaunay.Point2D) = -1
+
+Base.:+(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(
+    getx(A) + getx(B), gety(A) + gety(B)
+)
+Base.:-(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(
+    getx(A) - getx(B), gety(A) - gety(B)
+)
+Base.:*(x::Float64, A::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(
+    x * getx(A), x*gety(A)
+)
 
 
 getx(p::GeometryBasics.Point2) = p[1]
