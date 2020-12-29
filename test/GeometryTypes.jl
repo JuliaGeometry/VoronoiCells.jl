@@ -1,5 +1,6 @@
 using VoronoiCells
 using GeometryBasics
+import Random
 
 
 @testset "Construct Rectangles" begin
@@ -35,49 +36,17 @@ end
 end
 
 
-@testset "Map points between recangles of the same size" begin
-    points = [GeometryBasics.Point2(rand(), rand()) for _ in 1:2]
-    from_rect = Rectangle(0, 1, 0, 1)
-    to_rect = Rectangle(1, 2, 1, 2)
-
-    transformed_points = map_rectangle(points, from_rect, to_rect)
-
-    @testset "Output has expected type" begin
-        @test isa(transformed_points, Vector{VoronoiCells.IndexablePoint2D})
-
-        @test getindex(transformed_points[1]) == 1
-        @test getindex(transformed_points[2]) == 2
-    end
-
-    @testset "Output has expected values" begin
-        from_x = points[1][1]
-        to_x = VoronoiCells.getx(transformed_points[1])
-        @test to_x == from_x + 1
-
-        from_y = points[1][2]
-        to_y = VoronoiCells.gety(transformed_points[1])
-        @test to_y == from_y + 1
-    end
-end
-
-
-@testset "Map points between scaled recangles" begin
-    points = [
-        GeometryBasics.Point2(0, 0),
-        GeometryBasics.Point2(0.5, 0.5),
-        GeometryBasics.Point2(1, 1)
-    ]
+@testset "Map points between recangles" begin
+    Random.seed!(1337)
+    points = [GeometryBasics.Point2(rand(), rand()) for _ in 1:3]
 
     from_rect = Rectangle(0, 1, 0, 1)
     to_rect = Rectangle(0, 2, 0, 2)
 
     transformed_points = map_rectangle(points, from_rect, to_rect)
+    double_transformed_points = map_rectangle(transformed_points, to_rect, from_rect)
 
-    @testset "Output has expected values" begin
-        @test transformed_points[1] == VoronoiCells.IndexablePoint2D(0.0, 0.0, 1)
-        @test transformed_points[2] == VoronoiCells.IndexablePoint2D(1.0, 1.0, 2)
-        @test transformed_points[3] == VoronoiCells.IndexablePoint2D(2.0, 2.0, 3)
-    end
+    @test all(points .== double_transformed_points)
 end
 
 
