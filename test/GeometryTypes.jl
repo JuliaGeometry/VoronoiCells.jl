@@ -4,8 +4,14 @@ import Random
 
 
 @testset "Construct Rectangles" begin
-    @testset "Valid Rectangles" begin
+    @testset "Construct with canonical constructor" begin
+        rect = Rectangle(0, 1, 0, 1)
+        @test isa(rect, Rectangle)
+    end
+
+    @testset "Construct with Points" begin
         rect1 = Rectangle(0, 1, 0, 1)
+
         rect2 = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(1, 1))
         @test rect1 == rect2
 
