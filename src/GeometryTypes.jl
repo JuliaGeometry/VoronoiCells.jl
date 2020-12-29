@@ -4,10 +4,15 @@ struct IndexablePoint2D <: VoronoiDelaunay.AbstractPoint2D
     _index::Int64
 end
 
+IndexablePoint2D(x::Float64, y::Float64) = IndexablePoint2D(x, y, -1)
 getx(p::IndexablePoint2D) = p._x
 gety(p::IndexablePoint2D) = p._y
 Base.getindex(p::IndexablePoint2D) = p._index
 Base.getindex(::VoronoiDelaunay.Point2D) = -1
+
+
+getx(p::GeometryBasics.Point2) = p[1]
+gety(p::GeometryBasics.Point2) = p[2]
 
 
 # GeometryBasics' HyperRectangle seems cumbersome to index for specific points.
@@ -45,14 +50,14 @@ upper(rect::Rectangle) = rect.Upper
 
 
 @inline function isinside(point, rect)
-    isinside_x = left(rect) <= point[1] <= right(rect)
-    isinside_y = lower(rect) <= point[2] <= upper(rect)
+    isinside_x = left(rect) <= getx(point) <= right(rect)
+    isinside_y = lower(rect) <= gety(point) <= upper(rect)
 
     isinside_x && isinside_y
 end
 
 
-function map_rectangle(points, from::Rectangle, to::Rectangle)
+function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle, to::Rectangle) where T
     offsetx_from = left(from)
     offsety_from = lower(from)
 
@@ -73,6 +78,34 @@ function map_rectangle(points, from::Rectangle, to::Rectangle)
             offsetx_to + (point[1] - offsetx_from) * slopex,
             offsety_to + (point[2] - offsety_from) * slopey,
             index
+        )
+    end
+
+    return transformed_points
+end
+
+
+function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Rectangle) where T
+    offsetx_from = left(from)
+    offsety_from = lower(from)
+
+    offsetx_to = left(to)
+    offsety_to = lower(to)
+
+    slopex = (right(to) - left(to)) / (right(from) - left(from))
+    slopey = (upper(to) - lower(to)) / (upper(from) - lower(from))
+
+    no_points = length(points)
+    transformed_points = Vector{GeometryBasics.Point2{Float64}}(undef, no_points)
+    for point in points
+        if !isinside(point, from)
+            throw(error("Point is not inside rectangle"))
+        end
+
+        index = getindex(point)
+        transformed_points[index] = GeometryBasics.Point2(
+            offsetx_to + (getx(point) - offsetx_from) * slopex,
+            offsety_to + (gety(point) - offsety_from) * slopey
         )
     end
 
