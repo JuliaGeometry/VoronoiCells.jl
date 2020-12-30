@@ -10,7 +10,7 @@ import VoronoiDelaunay
 
         @test p + q == VoronoiDelaunay.Point2D(2.1, 2.1)
         @test q - p ≈ VoronoiDelaunay.Point2D(0.1, 0.1)
-        @test 1.5 * p ≈ VoronoiDelaunay.Point2D(1.5, 1.5)
+        @test 1.5 * p == VoronoiDelaunay.Point2D(1.5, 1.5)
     end
 
     @testset "Distance between points" begin
