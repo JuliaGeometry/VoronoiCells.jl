@@ -5,6 +5,7 @@ import VoronoiDelaunay
 import VoronoiDelaunay: getx, gety, geta, getb, getgena, getgenb
 
 export
+    IndexablePoint2D,
     PointCollection,
     Rectangle,
 

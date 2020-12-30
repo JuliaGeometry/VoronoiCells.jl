@@ -47,6 +47,10 @@ for op in [:+, :-]
 	end
 end
 
+function Base.isapprox(p::VoronoiDelaunay.AbstractPoint2D, q::VoronoiDelaunay.AbstractPoint2D)
+    isapprox(getx(p), getx(q)) && isapprox(gety(p), gety(q))
+end
+
 Base.:*(a::Float64, p::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(a*getx(p), a*gety(p))
 
 

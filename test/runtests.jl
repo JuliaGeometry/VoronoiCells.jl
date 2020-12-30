@@ -1,4 +1,5 @@
 using VoronoiCells
 using Test
 
-include("GeometryTypes.jl")
+include("Points.jl")
+include("Rectangles.jl")
