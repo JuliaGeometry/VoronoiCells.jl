@@ -1,4 +1,4 @@
-function mean(pts::Vector{GeometryBasics.Point2})
+function mean(pts::Vector{GeometryBasics.Point2{T}}) where T
 	ax = 0.0
 	ay = 0.0
 

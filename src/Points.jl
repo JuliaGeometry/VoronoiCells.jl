@@ -4,7 +4,7 @@ struct IndexablePoint2D <: VoronoiDelaunay.AbstractPoint2D
     _index::Int64
 end
 
-function Base.abs2(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoint2D)
+function Base.abs2(A, B)
     abs2(getx(A) - getx(B)) + abs2(gety(A) - gety(B))
 end
 
