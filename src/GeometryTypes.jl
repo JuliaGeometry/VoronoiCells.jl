@@ -8,6 +8,7 @@ function Base.abs2(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.Abstra
     abs2(getx(A) - getx(B)) + abs2(gety(A) - gety(B))
 end
 
+# TODO: We need corners in computation rectangle (as well)
 const BoundingBoxCorners = [
     VoronoiDelaunay.Point2D(VoronoiDelaunay.max_coord, VoronoiDelaunay.max_coord)
     VoronoiDelaunay.Point2D(VoronoiDelaunay.min_coord, VoronoiDelaunay.max_coord)
@@ -49,6 +50,10 @@ Base.:*(x::Float64, A::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2
     x * getx(A), x*gety(A)
 )
 
+
+function GeometryBasics.Point2(p::VoronoiDelaunay.AbstractPoint2D)
+    GeometryBasics.Point(getx(p), gety(p))
+end
 
 getx(p::GeometryBasics.Point2) = p[1]
 gety(p::GeometryBasics.Point2) = p[2]
