@@ -40,15 +40,15 @@ gety(p::IndexablePoint2D) = p._y
 Base.getindex(p::IndexablePoint2D) = p._index
 Base.getindex(::VoronoiDelaunay.Point2D) = -1
 
-Base.:+(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(
-    getx(A) + getx(B), gety(A) + gety(B)
-)
-Base.:-(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(
-    getx(A) - getx(B), gety(A) - gety(B)
-)
-Base.:*(x::Float64, A::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(
-    x * getx(A), x*gety(A)
-)
+for op in [:+, :-]
+	@eval begin
+		Base.$op(p::VoronoiDelaunay.AbstractPoint2D, q::VoronoiDelaunay.AbstractPoint2D) = 
+        VoronoiDelaunay.Point2D($op(getx(p), getx(q)), $op(gety(p), gety(q)))
+	end
+end
+
+Base.:*(a::Float64, p::VoronoiDelaunay.AbstractPoint2D) = VoronoiDelaunay.Point2D(a*getx(p), a*gety(p))
+
 
 
 function GeometryBasics.Point2(p::VoronoiDelaunay.AbstractPoint2D)
@@ -57,5 +57,3 @@ end
 
 getx(p::GeometryBasics.Point2) = p[1]
 gety(p::GeometryBasics.Point2) = p[2]
-
-

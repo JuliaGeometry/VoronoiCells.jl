@@ -16,11 +16,8 @@ end
 
 
 function Rectangle(p1::GeometryBasics.Point2, p2::GeometryBasics.Point2)
-    left = min(p1[1], p2[1])
-    right = max(p1[1], p2[1])
-
-    lower = min(p1[2], p2[2])
-    upper = max(p1[2], p2[2])
+    left, right = minmax(p1[1], p2[1])
+    lower, upper = minmax(p1[2], p2[2])
 
     Rectangle(left, right, lower, upper)
 end
