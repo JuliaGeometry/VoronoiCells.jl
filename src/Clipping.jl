@@ -1,4 +1,4 @@
-function clip(l::VoronoiDelaunay.VoronoiEdge, rect::Rectangle)
+function clip(l, rect::Rectangle)
     A = VoronoiDelaunay.geta(l)
     B = VoronoiDelaunay.getb(l)
 
