@@ -16,6 +16,13 @@ const BoundingBoxCorners = [
     VoronoiDelaunay.Point2D(VoronoiDelaunay.max_coord, VoronoiDelaunay.min_coord)
 ]
 
+const ComputationRectangleCorners = [
+    VoronoiDelaunay.Point2D(1.74, 1.74)
+    VoronoiDelaunay.Point2D(1.26, 1.74)
+    VoronoiDelaunay.Point2D(1.26, 1.26)
+    VoronoiDelaunay.Point2D(1.74, 1.26)
+]
+
 function closest_quadrant(p::VoronoiDelaunay.AbstractPoint2D)
     closest_quadrant = 0
     quadrant_dist = Inf
@@ -29,6 +36,25 @@ function closest_quadrant(p::VoronoiDelaunay.AbstractPoint2D)
 
     return closest_quadrant
 end
+
+
+function nearest_neighbor(q, points)
+    neighbor_indices = Vector{Int64}(undef, 0)
+    neighbor_dist = Inf
+
+    for (index, point) in enumerate(points)
+        dist_to_q = abs2(q, point)
+        if dist_to_q ≈ neighbor_dist
+            push!(neighbor_indices, index)
+        elseif dist_to_q < neighbor_dist
+            neighbor_dist = dist_to_q
+            neighbor_indices = [index]
+        end
+    end
+
+    neighbor_indices
+end
+
 
 # IndexablePoint2D(x::Float64, y::Float64) = IndexablePoint2D(x, y, -1)
 function IndexablePoint2D(x::Float64, y::Float64)
