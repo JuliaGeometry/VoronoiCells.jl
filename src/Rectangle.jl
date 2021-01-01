@@ -29,6 +29,16 @@ lower(rect::Rectangle) = rect.Lower
 upper(rect::Rectangle) = rect.Upper
 
 
+function corners(rect::Rectangle)
+    [
+        GeometryBasics.Point2(right(rect), upper(rect)),
+        GeometryBasics.Point2(left(rect), upper(rect)),
+        GeometryBasics.Point2(left(rect), lower(rect)),
+        GeometryBasics.Point2(right(rect), lower(rect))
+    ]
+end
+
+
 @inline function isinside(point, rect)
     isinside_x = left(rect) <= getx(point) <= right(rect)
     isinside_y = lower(rect) <= gety(point) <= upper(rect)
@@ -65,7 +75,7 @@ function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle
 end
 
 
-function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Rectangle) where T
+function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Rectangle)
     offsetx_from = left(from)
     offsety_from = lower(from)
 
@@ -83,6 +93,34 @@ function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Re
         end
 
         index = getindex(point)
+        transformed_points[index] = GeometryBasics.Point2(
+            offsetx_to + (getx(point) - offsetx_from) * slopex,
+            offsety_to + (gety(point) - offsety_from) * slopey
+        )
+    end
+
+    return transformed_points
+end
+
+
+function map_rectangle(points::Vector{T}, from::Rectangle, to::Rectangle) where T <: VoronoiDelaunay.AbstractPoint2D
+# function map_rectangle(points::Vector{VoronoiDelaunay.AbstractPoint2D}, from::Rectangle, to::Rectangle) where T
+    offsetx_from = left(from)
+    offsety_from = lower(from)
+
+    offsetx_to = left(to)
+    offsety_to = lower(to)
+
+    slopex = (right(to) - left(to)) / (right(from) - left(from))
+    slopey = (upper(to) - lower(to)) / (upper(from) - lower(from))
+
+    no_points = length(points)
+    transformed_points = Vector{GeometryBasics.Point2{Float64}}(undef, no_points)
+    for (index, point) in enumerate(points)
+        if !isinside(point, from)
+            throw(error("Point is not inside rectangle"))
+        end
+
         transformed_points[index] = GeometryBasics.Point2(
             offsetx_to + (getx(point) - offsetx_from) * slopex,
             offsety_to + (gety(point) - offsety_from) * slopey
