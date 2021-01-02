@@ -21,7 +21,6 @@ end
 
 
 struct RawTessellation
-    # Generators::Vector{IndexablePoint2D}
     EnclosingRectangle::Rectangle
     ComputationRectangle::Rectangle
     VoronoiCells::Dict{Int64, Vector{VoronoiDelaunay.Point2D}}
@@ -43,37 +42,9 @@ function raw_tesselation(pc::PointCollection)
     for edge in VoronoiDelaunay.voronoiedges(generators)
         l = clip(edge, pc.ComputationRectangle)
         if isnothing(l)
-            # # One generator is a "ghost point"
-            # generator_indices = getindex.(
-            #     [VoronoiDelaunay.getgena(edge), VoronoiDelaunay.getgenb(edge)]
-            # )
-            
-            # if generator_indices[1] < 0
-            #     quadrant_index = -generator_indices[1]
-            #     generator = getgenb(edge)
-            #     generator_index = generator_indices[2]
-            # elseif generator_indices[2] < 0
-            #     quadrant_index = -generator_indices[2]
-            #     generator_index = generator_indices[1]
-            #     generator = getgena(edge)
-            # else
-            #     continue
-            # end
-
-            # quadrant_dist = abs2(generator, BoundingBoxCorners[quadrant_index]) 
-
-            # # Multiple points may be equally close to a ghost point
-            # if quadrant_dist == all_quadrant_dist[quadrant_index]
-            #     push!(quadrant_neighbors[quadrant_index], generator_index)
-            # elseif quadrant_dist < all_quadrant_dist[quadrant_index]
-            #     push!(quadrant_neighbors[quadrant_index], generator_index)
-            #     # quadrant_neighbors[quadrant_index] = [generator_index]
-            # end
-
             continue
         end
 
-        # TODO: We *can* get edges with ghost endpoint. Make smaller computation_rect?
         generator_a = VoronoiDelaunay.getgena(edge) |> getindex
         generator_b = VoronoiDelaunay.getgenb(edge) |> getindex
 
@@ -89,11 +60,13 @@ function raw_tesselation(pc::PointCollection)
     )
 end
 
+
 struct Tessellation
     Generators::Vector{GeometryBasics.Point{2,Float64}}
     EnclosingRectangle::Rectangle
     Cells::Vector{Vector{GeometryBasics.Point{2,Float64}}}
 end
+
 
 function voronoicells(pc::PointCollection)
     rt = raw_tesselation(pc)
@@ -111,8 +84,10 @@ function voronoicells(pc::PointCollection)
     for n in 1:n_cells
         cell_corners = unique(rt.VoronoiCells[n])
 
-        cells[n] = map_rectangle(cell_corners, rt.ComputationRectangle, rt.EnclosingRectangle) |>
-            sort
+        unsorted_cell_corners = map_rectangle(
+            cell_corners, rt.ComputationRectangle, rt.EnclosingRectangle
+        )
+        cells[n] = sort(unsorted_cell_corners)
     end
 
     Tessellation(pc.OriginalPoints, pc.EnclosingRectangle, cells)
