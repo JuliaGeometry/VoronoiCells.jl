@@ -12,7 +12,7 @@ function mean(pts::Vector{GeometryBasics.Point2{T}}) where T
 end
 
 
-for name in [:sort, :sort!, :issorted]
+for name in [:sort, :sort!, :issorted, :sortperm]
 	@eval begin
 		function Base.$name(pts::Vector{GeometryBasics.Point2{T}}) where T
 			center = mean(pts)

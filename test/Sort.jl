@@ -13,11 +13,12 @@ using VoronoiCells
         @test VoronoiCells.mean(points) == GeometryBasics.Point2(2.0, 2.0)
     end
 
-    @testset "Sort points in clockwise order" begin
-        # It is simpler when all points are in the same quadrant
-        points = [GeometryBasics.Point2(cos(θ), sin(θ)) for θ in 1.5:-0.5:0]
+    @testset "Sorting points is independent of translation" begin
+        radians = range(0, stop = 2π, length = 10)
+        points = [GeometryBasics.Point2(cos(θ), sin(θ)) for θ in radians]
+        translated_points = [GeometryBasics.Point2(1, 1) + point for point in points]
 
-        @test VoronoiCells.issorted(points)
+        @test sortperm(points) == sortperm(translated_points)
     end
 end
 
