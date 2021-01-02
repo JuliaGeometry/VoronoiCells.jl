@@ -92,28 +92,3 @@ function voronoicells(pc::PointCollection)
 
     Tessellation(pc.OriginalPoints, pc.EnclosingRectangle, cells)
 end
-
-
-
-# function quadrant_neighbors(points::Vector{T}) where T <: VoronoiDelaunay.AbstractPoint2D
-function quadrant_neighbors(pc::PointCollection)
-    points = pc.TransformedPoints
-    qn = Dict(1:4 .=> [Vector{Int64}(undef, 0) for _ in 1:4])
-    quadrant_dists = [Inf for _ in 1:4]
-    for (index, point) in enumerate(points)
-            # @show point
-        for n in 1:4
-            # @show dist_to_corner = abs2(point, pc.ComputationRectangle[n])
-            dist_to_corner = abs2(point, ComputationRectangleCorners[n])
-            if dist_to_corner == quadrant_dists[n]
-                push!(qn[n], index)
-            elseif dist_to_corner < quadrant_dists[n]
-                qn[n] = [index]
-                # push!(qn[n], index)
-                quadrant_dists[n] = dist_to_corner
-            end
-        end
-    end
-
-    return qn
-end
