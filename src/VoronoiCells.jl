@@ -4,6 +4,8 @@ import GeometryBasics
 import VoronoiDelaunay
 import VoronoiDelaunay: getx, gety, geta, getb, getgena, getgenb
 
+using RecipesBase
+
 export
     IndexablePoint2D,
     PointCollection,
@@ -18,5 +20,6 @@ include("Rectangle.jl")
 include("Clipping.jl")
 include("Sort.jl")
 include("Cells.jl")
+include("Plot.jl")
 
 end # module
