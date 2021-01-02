@@ -111,7 +111,8 @@ function voronoicells(pc::PointCollection)
     for n in 1:n_cells
         cell_corners = unique(rt.VoronoiCells[n])
 
-        cells[n] = map_rectangle(cell_corners, rt.ComputationRectangle, rt.EnclosingRectangle)
+        cells[n] = map_rectangle(cell_corners, rt.ComputationRectangle, rt.EnclosingRectangle) |>
+            sort
     end
 
     Tessellation(pc.OriginalPoints, pc.EnclosingRectangle, cells)
