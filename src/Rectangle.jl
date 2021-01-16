@@ -104,7 +104,6 @@ end
 
 
 function map_rectangle(points::Vector{T}, from::Rectangle, to::Rectangle) where T <: VoronoiDelaunay.AbstractPoint2D
-# function map_rectangle(points::Vector{VoronoiDelaunay.AbstractPoint2D}, from::Rectangle, to::Rectangle) where T
     offsetx_from = left(from)
     offsety_from = lower(from)
 
