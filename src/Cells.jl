@@ -20,14 +20,6 @@ function PointCollection(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
 end
 
 
-struct RawTessellation
-    EnclosingRectangle::Rectangle
-    ComputationRectangle::Rectangle
-    VoronoiCells::Dict{Int64, Vector{VoronoiDelaunay.Point2D}}
-    QuadrantNeighbors::Dict{Int64, Vector{Int64}}
-end
-
-
 function raw_tesselation(pc::PointCollection)
     n_points = length(pc.OriginalPoints)
 
@@ -36,10 +28,10 @@ function raw_tesselation(pc::PointCollection)
     push!(generators, pc.TransformedPoints)
 
     voronoi_cells = Dict(1:n_points .=> [Vector{VoronoiDelaunay.Point2D}(undef, 0) for _ in 1:n_points])
-    quadrant_neighbors = Dict(1:4 .=> [Vector{Int64}(undef, 0) for _ in 1:4])
-    all_quadrant_dist = [Inf for _ in 1:4]
 
     for edge in VoronoiDelaunay.voronoiedges(generators)
+        # @show edge
+        # @show l = clip(edge, pc.ComputationRectangle)
         l = clip(edge, pc.ComputationRectangle)
         if isnothing(l)
             continue
@@ -55,9 +47,7 @@ function raw_tesselation(pc::PointCollection)
         push!(voronoi_cells[generator_b], getb(l))
     end
 
-    RawTessellation(
-        pc.EnclosingRectangle, pc.ComputationRectangle, voronoi_cells, quadrant_neighbors
-    )
+    voronoi_cells
 end
 
 
@@ -75,20 +65,26 @@ function voronoicells(pc::PointCollection)
         nn = nearest_neighbor(ComputationRectangleCorners[n], pc.TransformedPoints)
         for m in nn
             tp_index = getindex(pc.TransformedPoints[m])
-            push!(rt.VoronoiCells[tp_index], ComputationRectangleCorners[n])
+            push!(rt[tp_index], ComputationRectangleCorners[n])
         end
     end
 
-    n_cells = length(rt.VoronoiCells)
+    n_cells = length(rt)
     cells = [Vector{GeometryBasics.Point2{Float64}}(undef, 0) for _ in 1:n_cells]
     for n in 1:n_cells
-        cell_corners = unique(rt.VoronoiCells[n])
+        cell_corners = unique(rt[n])
 
         unsorted_cell_corners = map_rectangle(
-            cell_corners, rt.ComputationRectangle, rt.EnclosingRectangle
+            cell_corners, pc.ComputationRectangle, pc.EnclosingRectangle
         )
         cells[n] = sort(unsorted_cell_corners)
     end
 
     Tessellation(pc.OriginalPoints, pc.EnclosingRectangle, cells)
+end
+
+
+function voronoicells(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
+    pc = VoronoiCells.PointCollection(points, rect)
+    voronoicells(pc)
 end
