@@ -63,8 +63,8 @@ function voronoicells(pc::PointCollection)
 
     for n in 1:4
         nn = nearest_neighbor(ComputationRectangleCorners[n], pc.TransformedPoints)
-        for m in nn
-            tp_index = getindex(pc.TransformedPoints[m])
+        for neighbor in nn
+            tp_index = getindex(pc.TransformedPoints[neighbor])
             push!(rt[tp_index], ComputationRectangleCorners[n])
         end
     end
@@ -85,6 +85,17 @@ end
 
 
 function voronoicells(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
-    pc = VoronoiCells.PointCollection(points, rect)
+    pc = PointCollection(points, rect)
     voronoicells(pc)
+end
+
+
+function voronoicells(x::Vector, y::Vector, rect)
+    n = length(x)
+    if n != length(y)
+        throw(ArgumentError("x and y must have equal length"))
+    end
+
+    points = [GeometryBasics.Point2(x[i], y[i]) for i in 1:n]
+    voronoicells(points, rect)
 end
