@@ -10,8 +10,8 @@ function PointCollection(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
     computation_rect = Rectangle(
         # ComputationRectangleCorners[1],
         # ComputationRectangleCorners[4],
-        GeometryBasics.Point2(1.26, 1.26),
-        GeometryBasics.Point2(1.74, 1.74)
+        GeometryBasics.Point2(1.5 - 1/6, 1.5 - 1/6),
+        GeometryBasics.Point2(1.5 + 1/6, 1.5 + 1/6)
     )
 
     transformed_points = map_rectangle(points, rect, computation_rect)
@@ -61,11 +61,11 @@ end
 function voronoicells(pc::PointCollection)
     rt = raw_tesselation(pc)
 
-    for n in 1:4
-        nn = nearest_neighbor(ComputationRectangleCorners[n], pc.TransformedPoints)
+    for corner in corners(pc.ComputationRectangle)
+        nn = nearest_neighbor(corner, pc.TransformedPoints)
         for neighbor in nn
             tp_index = getindex(pc.TransformedPoints[neighbor])
-            push!(rt[tp_index], ComputationRectangleCorners[n])
+            push!(rt[tp_index], corner)
         end
     end
 

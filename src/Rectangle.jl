@@ -31,10 +31,14 @@ upper(rect::Rectangle) = rect.Upper
 
 function corners(rect::Rectangle)
     [
-        GeometryBasics.Point2(right(rect), upper(rect)),
-        GeometryBasics.Point2(left(rect), upper(rect)),
-        GeometryBasics.Point2(left(rect), lower(rect)),
-        GeometryBasics.Point2(right(rect), lower(rect))
+        VoronoiDelaunay.Point2D(right(rect), upper(rect)),
+        VoronoiDelaunay.Point2D(left(rect), upper(rect)),
+        VoronoiDelaunay.Point2D(left(rect), lower(rect)),
+        VoronoiDelaunay.Point2D(right(rect), lower(rect))
+        # GeometryBasics.Point2(right(rect), upper(rect)),
+        # GeometryBasics.Point2(left(rect), upper(rect)),
+        # GeometryBasics.Point2(left(rect), lower(rect)),
+        # GeometryBasics.Point2(right(rect), lower(rect))
     ]
 end
 
