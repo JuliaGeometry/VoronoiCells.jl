@@ -10,6 +10,7 @@ export
     IndexablePoint2D,
     PointCollection,
     Rectangle,
+    Tessellation,
 
     map_rectangle,
     voronoicells
