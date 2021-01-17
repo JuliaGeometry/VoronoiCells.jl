@@ -5,12 +5,26 @@ struct Rectangle
     Lower::Float64
     Upper::Float64
 
+    Center::GeometryBasics.Point2{Float64}
+
+    UpperRightCorner::GeometryBasics.Point2{Float64}
+    UpperLeftCorner::GeometryBasics.Point2{Float64}
+    LowerLeftCorner::GeometryBasics.Point2{Float64}
+    LowerRightCorner::GeometryBasics.Point2{Float64}
+
     function Rectangle(left, right, lower, upper)
         if left >= right || lower >= upper
-            throw(error("Empty rectangle"))
+            throw(ArgumentError("Empty rectangle"))
         end
 
-        new(left, right, lower, upper)
+        center = GeometryBasics.Point2(0.5*(left + right), 0.5*(lower + upper))
+
+        ur = GeometryBasics.Point2(right, upper)
+        ul = GeometryBasics.Point2(left, upper)
+        ll = GeometryBasics.Point2(left, lower)
+        lr = GeometryBasics.Point2(right, lower)
+
+        new(left, right, lower, upper, center, ur, ul, ll, lr)
     end
 end
 
@@ -28,18 +42,57 @@ right(rect::Rectangle) = rect.Right
 lower(rect::Rectangle) = rect.Lower
 upper(rect::Rectangle) = rect.Upper
 
+center(rect::Rectangle) = rect.Center
+
+upper_right(rect::Rectangle) = rect.UpperRightCorner
+upper_left(rect::Rectangle) = rect.UpperLeftCorner
+lower_right(rect::Rectangle) = rect.LowerRightCorner
+lower_left(rect::Rectangle) = rect.LowerLeftCorner
+
+
+# function nearest_corner(point, rect)
+#     rect_center = center(rect)
+
+#     if getx(point) >= getx(rect_center)
+#         if gety(point) >= gety(rect_center)
+#             return 1
+#         else
+#             return 4
+#         end
+#     else
+#         if gety(point) >= gety(rect_center)
+#             return 2
+#         else
+#             return 3
+#         end
+#     end
+# end
+
+
+function corner_nearest_neighbor(points::Vector{T}, rect::Rectangle) where T <: GeometryBasics.Point2
+    rect_corners = corners(rect)
+    neighbors = Dict(1:4 .=> [Vector{Int64}(undef, 0)])
+    corner_distances = [Inf for _ in 1:4]
+
+    for (index, point) in enumerate(points)
+        for corner_index in 1:4
+            corner_dist = abs2(point, rect_corners[corner_index])
+
+            if corner_dist ≈ corner_distances[corner_index]
+                push!(neighbors[corner_index], index)
+            elseif corner_dist < corner_distances[corner_index]
+                corner_distances[corner_index] = corner_dist
+                neighbors[corner_index] = [index]
+            end
+        end
+
+    end
+
+    return neighbors
+end
 
 function corners(rect::Rectangle)
-    [
-        VoronoiDelaunay.Point2D(right(rect), upper(rect)),
-        VoronoiDelaunay.Point2D(left(rect), upper(rect)),
-        VoronoiDelaunay.Point2D(left(rect), lower(rect)),
-        VoronoiDelaunay.Point2D(right(rect), lower(rect))
-        # GeometryBasics.Point2(right(rect), upper(rect)),
-        # GeometryBasics.Point2(left(rect), upper(rect)),
-        # GeometryBasics.Point2(left(rect), lower(rect)),
-        # GeometryBasics.Point2(right(rect), lower(rect))
-    ]
+    [upper_right(rect), upper_left(rect), lower_left(rect), lower_right(rect)]
 end
 
 
@@ -79,6 +132,7 @@ function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle
 end
 
 
+# TODO: Obsolete with the method below for AbstractPoint2D?
 function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Rectangle)
     offsetx_from = left(from)
     offsety_from = lower(from)
