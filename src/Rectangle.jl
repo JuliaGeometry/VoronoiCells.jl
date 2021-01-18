@@ -1,54 +1,30 @@
 # GeometryBasics' HyperRectangle seems cumbersome to index for specific points.
-struct Rectangle
-    Left::Float64
-    Right::Float64
-    Lower::Float64
-    Upper::Float64
+struct Rectangle{T}
+    LowerLeft::T
+    UpperRight::T
 
-    Center::GeometryBasics.Point2{Float64}
+    function Rectangle(p1::T, p2::T) where T
+        left, right = minmax(getx(p1), getx(p2))
+        lower, upper = minmax(gety(p1), gety(p2))
 
-    UpperRightCorner::GeometryBasics.Point2{Float64}
-    UpperLeftCorner::GeometryBasics.Point2{Float64}
-    LowerLeftCorner::GeometryBasics.Point2{Float64}
-    LowerRightCorner::GeometryBasics.Point2{Float64}
+        lower_left = T(left, lower)
+        upper_right = T(upper, right)
 
-    function Rectangle(left, right, lower, upper)
-        if left >= right || lower >= upper
-            throw(ArgumentError("Empty rectangle"))
-        end
-
-        center = GeometryBasics.Point2(0.5*(left + right), 0.5*(lower + upper))
-
-        ur = GeometryBasics.Point2(right, upper)
-        ul = GeometryBasics.Point2(left, upper)
-        ll = GeometryBasics.Point2(left, lower)
-        lr = GeometryBasics.Point2(right, lower)
-
-        new(left, right, lower, upper, center, ur, ul, ll, lr)
+        new{T}(lower_left, upper_right)
     end
 end
 
+upper_right(rect::Rectangle{T}) where T = T(getx(rect.UpperRight), gety(rect.UpperRight))
+upper_left(rect::Rectangle{T}) where T = T(getx(rect.LowerLeft), gety(rect.UpperRight))
+lower_right(rect::Rectangle{T}) where T = T(getx(rect.UpperRight), gety(rect.LowerLeft))
+lower_left(rect::Rectangle{T}) where T = T(getx(rect.LowerLeft), gety(rect.LowerLeft))
 
-function Rectangle(p1::GeometryBasics.Point2, p2::GeometryBasics.Point2)
-    left, right = minmax(p1[1], p2[1])
-    lower, upper = minmax(p1[2], p2[2])
+left(rect::Rectangle) = getx(lower_left(rect))
+right(rect::Rectangle) = getx(upper_right(rect))
+lower(rect::Rectangle) = gety(lower_left(rect))
+upper(rect::Rectangle) = gety(upper_right(rect))
 
-    Rectangle(left, right, lower, upper)
-end
-
-
-left(rect::Rectangle) = rect.Left
-right(rect::Rectangle) = rect.Right
-lower(rect::Rectangle) = rect.Lower
-upper(rect::Rectangle) = rect.Upper
-
-center(rect::Rectangle) = rect.Center
-
-upper_right(rect::Rectangle) = rect.UpperRightCorner
-upper_left(rect::Rectangle) = rect.UpperLeftCorner
-lower_right(rect::Rectangle) = rect.LowerRightCorner
-lower_left(rect::Rectangle) = rect.LowerLeftCorner
-
+# center(rect::Rectangle) = rect.Center
 
 # function nearest_corner(point, rect)
 #     rect_center = center(rect)
@@ -69,13 +45,16 @@ lower_left(rect::Rectangle) = rect.LowerLeftCorner
 # end
 
 
-function corner_nearest_neighbor(points::Vector{T}, rect::Rectangle) where T <: GeometryBasics.Point2
+function corner_nearest_neighbor(points::Vector{T}, rect::Rectangle) where T
+    # @show rect_corners = corners(rect)
     rect_corners = corners(rect)
     neighbors = Dict(1:4 .=> [Vector{Int64}(undef, 0)])
     corner_distances = [Inf for _ in 1:4]
 
     for (index, point) in enumerate(points)
+        # @show index, point
         for corner_index in 1:4
+            # @show corner_dist = abs2(point, rect_corners[corner_index])
             corner_dist = abs2(point, rect_corners[corner_index])
 
             if corner_dist ≈ corner_distances[corner_index]
@@ -132,7 +111,6 @@ function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle
 end
 
 
-# TODO: Obsolete with the method below for AbstractPoint2D?
 function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Rectangle)
     offsetx_from = left(from)
     offsety_from = lower(from)
