@@ -7,6 +7,10 @@ struct Rectangle{T}
         left, right = minmax(getx(p1), getx(p2))
         lower, upper = minmax(gety(p1), gety(p2))
 
+        if left >= right || lower >= upper
+            throw(ArgumentError("Empty rectangle"))
+        end
+
         lower_left = T(left, lower)
         upper_right = T(upper, right)
 
@@ -14,47 +18,26 @@ struct Rectangle{T}
     end
 end
 
-upper_right(rect::Rectangle{T}) where T = T(getx(rect.UpperRight), gety(rect.UpperRight))
-upper_left(rect::Rectangle{T}) where T = T(getx(rect.LowerLeft), gety(rect.UpperRight))
-lower_right(rect::Rectangle{T}) where T = T(getx(rect.UpperRight), gety(rect.LowerLeft))
-lower_left(rect::Rectangle{T}) where T = T(getx(rect.LowerLeft), gety(rect.LowerLeft))
 
-left(rect::Rectangle) = getx(lower_left(rect))
-right(rect::Rectangle) = getx(upper_right(rect))
-lower(rect::Rectangle) = gety(lower_left(rect))
-upper(rect::Rectangle) = gety(upper_right(rect))
+left(rect::Rectangle) = getx(rect.LowerLeft)
+right(rect::Rectangle) = getx(rect.UpperRight)
+lower(rect::Rectangle) = gety(rect.LowerLeft)
+upper(rect::Rectangle) = gety(rect.UpperRight)
 
-# center(rect::Rectangle) = rect.Center
 
-# function nearest_corner(point, rect)
-#     rect_center = center(rect)
-
-#     if getx(point) >= getx(rect_center)
-#         if gety(point) >= gety(rect_center)
-#             return 1
-#         else
-#             return 4
-#         end
-#     else
-#         if gety(point) >= gety(rect_center)
-#             return 2
-#         else
-#             return 3
-#         end
-#     end
-# end
+upper_right(rect::Rectangle{T}) where T = rect.UpperRight
+upper_left(rect::Rectangle{T}) where T = T(left(rect), upper(rect))
+lower_right(rect::Rectangle{T}) where T = T(right(rect), lower(rect))
+lower_left(rect::Rectangle{T}) where T = rect.LowerLeft
 
 
 function corner_nearest_neighbor(points::Vector{T}, rect::Rectangle) where T
-    # @show rect_corners = corners(rect)
     rect_corners = corners(rect)
     neighbors = Dict(1:4 .=> [Vector{Int64}(undef, 0)])
     corner_distances = [Inf for _ in 1:4]
 
     for (index, point) in enumerate(points)
-        # @show index, point
         for corner_index in 1:4
-            # @show corner_dist = abs2(point, rect_corners[corner_index])
             corner_dist = abs2(point, rect_corners[corner_index])
 
             if corner_dist ≈ corner_distances[corner_index]
@@ -70,7 +53,8 @@ function corner_nearest_neighbor(points::Vector{T}, rect::Rectangle) where T
     return neighbors
 end
 
-function corners(rect::Rectangle)
+
+function corners(rect)
     [upper_right(rect), upper_left(rect), lower_left(rect), lower_right(rect)]
 end
 
