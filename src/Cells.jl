@@ -1,22 +1,23 @@
-struct PointCollection
+struct PointCollection{T, S}
     OriginalPoints::Vector{GeometryBasics.Point{2,Float64}}
-    EnclosingRectangle::Rectangle
-    ComputationRectangle::Rectangle
+    EnclosingRectangle::Rectangle{T}
+    ComputationRectangle::Rectangle{S}
     TransformedPoints::Vector{IndexablePoint2D}
+    CornerNeighbors::Dict{Int64, Vector{Int64}}
 end
 
 
 function PointCollection(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
+    corner_neighbors = corner_nearest_neighbor(points, rect)
+
     computation_rect = Rectangle(
-        # ComputationRectangleCorners[1],
-        # ComputationRectangleCorners[4],
-        GeometryBasics.Point2(1.5 - 1/6, 1.5 - 1/6),
-        GeometryBasics.Point2(1.5 + 1/6, 1.5 + 1/6)
+        VoronoiDelaunay.Point2D(1.5 - 1/6, 1.5 - 1/6),
+        VoronoiDelaunay.Point2D(1.5 + 1/6, 1.5 + 1/6)
     )
 
     transformed_points = map_rectangle(points, rect, computation_rect)
 
-    PointCollection(points, rect, computation_rect, transformed_points)
+    PointCollection(points, rect, computation_rect, transformed_points, corner_neighbors)
 end
 
 
@@ -30,8 +31,6 @@ function raw_tesselation(pc::PointCollection)
     voronoi_cells = Dict(1:n_points .=> [Vector{VoronoiDelaunay.Point2D}(undef, 0) for _ in 1:n_points])
 
     for edge in VoronoiDelaunay.voronoiedges(generators)
-        # @show edge
-        # @show l = clip(edge, pc.ComputationRectangle)
         l = clip(edge, pc.ComputationRectangle)
         if isnothing(l)
             continue
@@ -61,11 +60,11 @@ end
 function voronoicells(pc::PointCollection)
     rt = raw_tesselation(pc)
 
-    for corner in corners(pc.ComputationRectangle)
-        nn = nearest_neighbor(corner, pc.TransformedPoints)
-        for neighbor in nn
-            tp_index = getindex(pc.TransformedPoints[neighbor])
-            push!(rt[tp_index], corner)
+    computation_corners = corners(pc.ComputationRectangle)
+    for (corner_index, corner) in enumerate(computation_corners)
+        corner_neighbors = pc.CornerNeighbors[corner_index]
+        for neighbor_index in corner_neighbors
+            push!(rt[neighbor_index], corner)
         end
     end
 
