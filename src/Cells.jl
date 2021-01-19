@@ -1,13 +1,13 @@
-struct PointCollection{T, S}
+struct PointCollection{T}
     OriginalPoints::Vector{GeometryBasics.Point{2,Float64}}
     EnclosingRectangle::Rectangle{T}
-    ComputationRectangle::Rectangle{S}
+    ComputationRectangle::Rectangle{VoronoiDelaunay.Point2D}
     TransformedPoints::Vector{IndexablePoint2D}
     CornerNeighbors::Dict{Int64, Vector{Int64}}
 end
 
 
-function PointCollection(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
+function PointCollection(points, rect)
     corner_neighbors = corner_nearest_neighbor(points, rect)
 
     computation_rect = Rectangle(
