@@ -1,41 +1,67 @@
 # GeometryBasics' HyperRectangle seems cumbersome to index for specific points.
-struct Rectangle
-    Left::Float64
-    Right::Float64
-    Lower::Float64
-    Upper::Float64
+struct Rectangle{T}
+    LowerLeft::T
+    UpperRight::T
 
-    function Rectangle(left, right, lower, upper)
+    function Rectangle(p1::T, p2::T) where T
+        left, right = minmax(getx(p1), getx(p2))
+        lower, upper = minmax(gety(p1), gety(p2))
+
         if left >= right || lower >= upper
-            throw(error("Empty rectangle"))
+            throw(ArgumentError("Empty rectangle"))
         end
 
-        new(left, right, lower, upper)
+        lower_left = T(left, lower)
+        upper_right = T(upper, right)
+
+        new{T}(lower_left, upper_right)
     end
 end
 
 
-function Rectangle(p1::GeometryBasics.Point2, p2::GeometryBasics.Point2)
-    left, right = minmax(p1[1], p2[1])
-    lower, upper = minmax(p1[2], p2[2])
+left(rect::Rectangle) = getx(rect.LowerLeft)
+right(rect::Rectangle) = getx(rect.UpperRight)
+lower(rect::Rectangle) = gety(rect.LowerLeft)
+upper(rect::Rectangle) = gety(rect.UpperRight)
 
-    Rectangle(left, right, lower, upper)
+
+upper_right(rect::Rectangle{T}) where T = rect.UpperRight
+upper_left(rect::Rectangle{T}) where T = T(left(rect), upper(rect))
+lower_right(rect::Rectangle{T}) where T = T(right(rect), lower(rect))
+lower_left(rect::Rectangle{T}) where T = rect.LowerLeft
+
+
+"""
+    corner_nearest_neighbor(points, rect)
+
+For each corner in the rectangle `rect`, find the point(s) in `points` that are closest.
+The result is a `Dict` where keys are `rect`'s corners and the values are the nearest neighbors.
+"""
+function corner_nearest_neighbor(points, rect)
+    rect_corners = corners(rect)
+    neighbors = Dict(1:4 .=> [Vector{Int64}(undef, 0)])
+    corner_distances = [Inf for _ in 1:4]
+
+    for (index, point) in enumerate(points)
+        for corner_index in 1:4
+            corner_dist = abs2(point, rect_corners[corner_index])
+
+            if corner_dist ≈ corner_distances[corner_index]
+                push!(neighbors[corner_index], index)
+            elseif corner_dist < corner_distances[corner_index]
+                corner_distances[corner_index] = corner_dist
+                neighbors[corner_index] = [index]
+            end
+        end
+
+    end
+
+    return neighbors
 end
 
 
-left(rect::Rectangle) = rect.Left
-right(rect::Rectangle) = rect.Right
-lower(rect::Rectangle) = rect.Lower
-upper(rect::Rectangle) = rect.Upper
-
-
-function corners(rect::Rectangle)
-    [
-        GeometryBasics.Point2(right(rect), upper(rect)),
-        GeometryBasics.Point2(left(rect), upper(rect)),
-        GeometryBasics.Point2(left(rect), lower(rect)),
-        GeometryBasics.Point2(right(rect), lower(rect))
-    ]
+function corners(rect)
+    [upper_right(rect), upper_left(rect), lower_left(rect), lower_right(rect)]
 end
 
 
@@ -104,7 +130,6 @@ end
 
 
 function map_rectangle(points::Vector{T}, from::Rectangle, to::Rectangle) where T <: VoronoiDelaunay.AbstractPoint2D
-# function map_rectangle(points::Vector{VoronoiDelaunay.AbstractPoint2D}, from::Rectangle, to::Rectangle) where T
     offsetx_from = left(from)
     offsety_from = lower(from)
 

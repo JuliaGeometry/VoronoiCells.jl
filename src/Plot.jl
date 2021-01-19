@@ -47,22 +47,23 @@ end
 
 @recipe function plot(tess::Tessellation)
     @series begin
+        xlims --> (left(tess.EnclosingRectangle), right(tess.EnclosingRectangle))
+        ylims --> (lower(tess.EnclosingRectangle), upper(tess.EnclosingRectangle))
         seriestype --> :path
-        # seriescolor --> "blue"
         label --> "Voronoi cells"
   
         corner_coordinates(tess)
     end
 
-    @series begin
-        xlims --> (left(tess.EnclosingRectangle), right(tess.EnclosingRectangle))
-        ylims --> (lower(tess.EnclosingRectangle), upper(tess.EnclosingRectangle))
-        markershape --> :circle
-        markersize --> 6
-        seriestype --> :scatter
-        label --> "generators"
+    # @series begin
+    #     xlims --> (left(tess.EnclosingRectangle), right(tess.EnclosingRectangle))
+    #     ylims --> (lower(tess.EnclosingRectangle), upper(tess.EnclosingRectangle))
+    #     markershape --> :circle
+    #     markersize --> 6
+    #     seriestype --> :scatter
+    #     label --> "generators"
 
-        tess.Generators
-    end
+    #     tess.Generators
+    # end
 end
 
