@@ -31,7 +31,13 @@ lower_right(rect::Rectangle{T}) where T = T(right(rect), lower(rect))
 lower_left(rect::Rectangle{T}) where T = rect.LowerLeft
 
 
-function corner_nearest_neighbor(points::Vector{T}, rect::Rectangle) where T
+"""
+    corner_nearest_neighbor(points, rect)
+
+For each corner in the rectangle `rect`, find the point(s) in `points` that are closest.
+The result is a `Dict` where keys are `rect`'s corners and the values are the nearest neighbors.
+"""
+function corner_nearest_neighbor(points, rect)
     rect_corners = corners(rect)
     neighbors = Dict(1:4 .=> [Vector{Int64}(undef, 0)])
     corner_distances = [Inf for _ in 1:4]
