@@ -2,7 +2,7 @@ using VoronoiCells
 using VoronoiDelaunay
 
 @testset "Clipping" begin
-    rect = Rectangle(1, 2, 1, 2)
+    rect = VoronoiCells.BoundingBox
 
     @testset "Lines wholly within the rectangle are not modified" begin
         A = VoronoiDelaunay.Point2D(1.3, 1.5)

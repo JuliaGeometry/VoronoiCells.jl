@@ -18,7 +18,13 @@ function clip(A::VoronoiDelaunay.AbstractPoint2D, B::VoronoiDelaunay.AbstractPoi
 	# left, right, bottom, top
 	# Parametrization of line segment from A to B
 	p = [-getx(D) ; getx(D) ; -gety(D) ; gety(D)]
-	q = [getx(A) - left(rect) ; right(rect) - getx(A) ; gety(A) - lower(rect) ; upper(rect) - gety(A)]
+	q = [
+		getx(A) - left(rect) ; 
+		right(rect) - getx(A) ; 
+		gety(A) - lower(rect) ; 
+		upper(rect) - gety(A)
+	]
+
 	for k in 1:4
 		if p[k] == 0.0
 			# Line parallel with k'th edge

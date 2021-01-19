@@ -23,4 +23,10 @@ include("Sort.jl")
 include("Cells.jl")
 include("Plot.jl")
 
+
+const BoundingBox = Rectangle(
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.min_coord, VoronoiDelaunay.min_coord),
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.max_coord, VoronoiDelaunay.max_coord)
+)
+
 end # module
