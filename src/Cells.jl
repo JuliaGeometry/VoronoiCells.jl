@@ -39,11 +39,14 @@ function raw_tesselation(pc::PointCollection)
         generator_a = VoronoiDelaunay.getgena(edge) |> getindex
         generator_b = VoronoiDelaunay.getgenb(edge) |> getindex
 
-        push!(voronoi_cells[generator_a], geta(l))
-        push!(voronoi_cells[generator_a], getb(l))
+        a = VoronoiDelaunay.geta(l)
+        b = VoronoiDelaunay.getb(l)
 
-        push!(voronoi_cells[generator_b], geta(l))
-        push!(voronoi_cells[generator_b], getb(l))
+        push!(voronoi_cells[generator_a], a)
+        push!(voronoi_cells[generator_a], b)
+
+        push!(voronoi_cells[generator_b], a)
+        push!(voronoi_cells[generator_b], b)
     end
 
     voronoi_cells
@@ -83,7 +86,7 @@ function voronoicells(pc::PointCollection)
 end
 
 
-function voronoicells(points::Vector{GeometryBasics.Point{2,Float64}}, rect)
+function voronoicells(points, rect)
     pc = PointCollection(points, rect)
     voronoicells(pc)
 end

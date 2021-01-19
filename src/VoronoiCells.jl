@@ -2,7 +2,7 @@ module VoronoiCells
 
 import GeometryBasics
 import VoronoiDelaunay
-import VoronoiDelaunay: getx, gety, geta, getb, getgena, getgenb
+import VoronoiDelaunay: getx, gety
 
 using RecipesBase
 
