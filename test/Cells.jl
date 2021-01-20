@@ -4,6 +4,32 @@ using Random
 
 
 @testset "Cells" begin
+    @testset "PointCollection from GeometryBasics" begin
+        Random.seed!(2)
+        points = [Point2(rand(), rand()) for _ in 1:5]
+        rect = Rectangle(Point2(0, 0), Point2(1, 1))
+
+        pc = PointCollection(points, rect)
+
+        @test isa(pc, PointCollection{GeometryBasics.Point2{Float64}})
+    end
+
+    @testset "Error making PointCollection from VoronoiDelaunay" begin
+        Random.seed!(2)
+        points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
+        rect = Rectangle(VoronoiDelaunay.Point2D(1.1, 1.1), VoronoiDelaunay.Point2D(1.9, 1.9))
+
+        @test_throws MethodError PointCollection(points, rect)
+    end
+
+    @testset "Error making PointCollection with mix of VoronoiDelaunay and GeometryBasics" begin
+        Random.seed!(2)
+        points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
+        rect = Rectangle(Point2(1, 1), Point2(2, 2))
+
+        @test_throws MethodError PointCollection(points, rect)
+    end
+
     @testset "Simple point set far from corners" begin
         rect = Rectangle(Point2(0, 0), Point2(1, 1))
 
