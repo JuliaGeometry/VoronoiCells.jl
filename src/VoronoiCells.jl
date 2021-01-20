@@ -12,7 +12,12 @@ export
     Rectangle,
     Tessellation,
 
+    left,
+    lower,
+    right,
+    upper,
     map_rectangle,
+    voronoiarea,
     voronoicells
 
 
@@ -22,6 +27,7 @@ include("Clipping.jl")
 include("Sort.jl")
 include("Cells.jl")
 include("Plot.jl")
+include("Area.jl")
 
 
 const BoundingBox = Rectangle(

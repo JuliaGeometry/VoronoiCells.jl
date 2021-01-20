@@ -1,4 +1,5 @@
 # GeometryBasics' HyperRectangle seems cumbersome to index for specific points.
+# And I also need to handle points from VoronoiDelaunay
 struct Rectangle{T}
     LowerLeft::T
     UpperRight::T
@@ -34,6 +35,11 @@ upper_right(rect::Rectangle{T}) where T = rect.UpperRight
 upper_left(rect::Rectangle{T}) where T = T(left(rect), upper(rect))
 lower_right(rect::Rectangle{T}) where T = T(right(rect), lower(rect))
 lower_left(rect::Rectangle{T}) where T = rect.LowerLeft
+
+
+function area(rect::Rectangle)
+    (right(rect) - left(rect)) * (upper(rect) - lower(rect))
+end
 
 
 """
