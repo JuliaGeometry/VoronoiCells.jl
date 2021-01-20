@@ -1,5 +1,5 @@
 struct PointCollection{T}
-    OriginalPoints::Vector{GeometryBasics.Point{2,Float64}}
+    OriginalPoints::Vector{T}
     EnclosingRectangle::Rectangle{T}
     ComputationRectangle::Rectangle{VoronoiDelaunay.Point2D}
     TransformedPoints::Vector{IndexablePoint2D}
@@ -53,10 +53,10 @@ function raw_tesselation(pc::PointCollection)
 end
 
 
-struct Tessellation
-    Generators::Vector{GeometryBasics.Point{2,Float64}}
-    EnclosingRectangle::Rectangle
-    Cells::Vector{Vector{GeometryBasics.Point{2,Float64}}}
+struct Tessellation{T}
+    Generators::Vector{T}
+    EnclosingRectangle::Rectangle{T}
+    Cells::Vector{Vector{T}}
 end
 
 
