@@ -19,6 +19,11 @@ struct Rectangle{T}
 end
 
 
+function Rectangle(p1::GeometryBasics.Point2{T}, p2::GeometryBasics.Point2{T}) where T <: Integer
+    Rectangle(float.(p1), float.(p2))
+end
+
+
 left(rect::Rectangle) = getx(rect.LowerLeft)
 right(rect::Rectangle) = getx(rect.UpperRight)
 lower(rect::Rectangle) = gety(rect.LowerLeft)

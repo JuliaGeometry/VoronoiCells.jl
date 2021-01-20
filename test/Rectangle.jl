@@ -6,7 +6,7 @@ import Random
     @testset "Construct Rectangles" begin
         @testset "Construct with with GeometryBasics integer points" begin
             rect = Rectangle(Point2(0, 0), Point2(1, 1))
-            @test isa(rect, Rectangle{GeometryBasics.Point{2, Int64}})
+            @test isa(rect, Rectangle{GeometryBasics.Point{2, Float64}})
         end
     
         @testset "Construct with with GeometryBasics floating points" begin
@@ -28,7 +28,7 @@ import Random
     end
     
     
-    @testset "Is point in rectangle" begin
+    @testset "Is point in rectangle?" begin
         @testset "Point is in rectangle" begin
             point = GeometryBasics.Point2(1, 1)
             rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(2, 2))
