@@ -21,21 +21,23 @@ end
 
 
 function corner_coordinates(tess::Tessellation)
-    lines = sides(tess)
-    n_sides = length(lines)
-    x = Vector{Float64}(undef, 3*n_sides)
+    # Each cell needs the number of points + line from last to first point + NaN
+    n_points = mapreduce(x -> length(x) + 2, +, tess.Cells)
+    x = Vector{Float64}(undef, n_points)
     y = similar(x)
 
     count = 0
-    for l in lines
-        count += 1
-        x[count] = getx(l[1])
-        y[count] = gety(l[1])
+    for cell in tess.Cells
+        for corner in cell
+            count += 1
+            x[count] = getx(corner)
+            y[count] = gety(corner)
+        end
 
         count += 1
-        x[count] = getx(l[2])
-        y[count] = gety(l[2])
-
+        x[count] = getx(cell[1])
+        y[count] = gety(cell[1])
+        
         count += 1
         x[count] = NaN
         y[count] = NaN
