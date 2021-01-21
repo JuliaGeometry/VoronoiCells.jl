@@ -30,16 +30,4 @@ end
   
         corner_coordinates(tess)
     end
-
-    # @series begin
-    #     xlims --> (left(tess.EnclosingRectangle), right(tess.EnclosingRectangle))
-    #     ylims --> (lower(tess.EnclosingRectangle), upper(tess.EnclosingRectangle))
-    #     markershape --> :circle
-    #     markersize --> 6
-    #     seriestype --> :scatter
-    #     label --> "generators"
-
-    #     tess.Generators
-    # end
 end
-
