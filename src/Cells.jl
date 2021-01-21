@@ -60,6 +60,9 @@ struct Tessellation{T}
 end
 
 
+Base.eltype(::Tessellation{T}) where T = T
+
+
 function voronoicells(pc::PointCollection)
     rt = raw_tesselation(pc)
 

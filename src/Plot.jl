@@ -23,27 +23,23 @@ end
 function corner_coordinates(tess::Tessellation)
     # Each cell needs the number of points + line from last to first point + NaN
     n_points = mapreduce(x -> length(x) + 2, +, tess.Cells)
-    x = Vector{Float64}(undef, n_points)
-    y = similar(x)
+    p = Vector{eltype(tess)}(undef, n_points)
 
     count = 0
     for cell in tess.Cells
         for corner in cell
             count += 1
-            x[count] = getx(corner)
-            y[count] = gety(corner)
+            p[count] = corner
         end
 
         count += 1
-        x[count] = getx(cell[1])
-        y[count] = gety(cell[1])
+        p[count] = cell[1]
         
         count += 1
-        x[count] = NaN
-        y[count] = NaN
+        p[count] = GeometryBasics.Point2(NaN, NaN)
     end
 
-    return x, y
+    return p
 end
 
 
