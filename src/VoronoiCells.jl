@@ -7,8 +7,6 @@ import VoronoiDelaunay: getx, gety
 using RecipesBase
 
 export
-    IndexablePoint2D,
-    PointCollection,
     Rectangle,
     Tessellation,
 
@@ -16,7 +14,6 @@ export
     lower,
     right,
     upper,
-    map_rectangle,
     voronoiarea,
     voronoicells
 

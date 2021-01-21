@@ -9,9 +9,9 @@ using Random
         points = [Point2(rand(), rand()) for _ in 1:5]
         rect = Rectangle(Point2(0, 0), Point2(1, 1))
 
-        pc = PointCollection(points, rect)
+        pc = VoronoiCells.PointCollection(points, rect)
 
-        @test isa(pc, PointCollection{GeometryBasics.Point2{Float64}})
+        @test isa(pc, VoronoiCells.PointCollection{GeometryBasics.Point2{Float64}})
     end
 
     @testset "Error making PointCollection from VoronoiDelaunay" begin
@@ -19,7 +19,7 @@ using Random
         points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
         rect = Rectangle(VoronoiDelaunay.Point2D(1.1, 1.1), VoronoiDelaunay.Point2D(1.9, 1.9))
 
-        @test_throws MethodError PointCollection(points, rect)
+        @test_throws MethodError VoronoiCells.PointCollection(points, rect)
     end
 
     @testset "Error making PointCollection with mix of VoronoiDelaunay and GeometryBasics" begin
@@ -27,7 +27,7 @@ using Random
         points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
         rect = Rectangle(Point2(1, 1), Point2(2, 2))
 
-        @test_throws MethodError PointCollection(points, rect)
+        @test_throws MethodError VoronoiCells.PointCollection(points, rect)
     end
 
     @testset "Simple point set far from corners" begin

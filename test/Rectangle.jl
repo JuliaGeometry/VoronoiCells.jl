@@ -52,8 +52,8 @@ import Random
         from_rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(1, 1))
         to_rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(2, 2))
     
-        transformed_points = map_rectangle(points, from_rect, to_rect)
-        double_transformed_points = map_rectangle(transformed_points, to_rect, from_rect)
+        transformed_points = VoronoiCells.map_rectangle(points, from_rect, to_rect)
+        double_transformed_points = VoronoiCells.map_rectangle(transformed_points, to_rect, from_rect)
     
         @test all(points .== double_transformed_points)
     end
@@ -65,7 +65,7 @@ import Random
         from_rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(1, 1))
         to_rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(2, 2))
     
-        @test_throws ErrorException map_rectangle(points, from_rect, to_rect)
+        @test_throws ErrorException VoronoiCells.map_rectangle(points, from_rect, to_rect)
     end
 
     @testset "Find points nearest to each rectangle corner" begin
