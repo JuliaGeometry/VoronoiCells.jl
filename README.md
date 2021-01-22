@@ -85,15 +85,16 @@ The corners of the Voronoi cells of the `n`'th generator is available as `tess.C
 The edges of the Voronoi cells can be plotted easily and then we can add the generators afterwards:
 
 ```julia
-plot(tess)
-scatter!(points, markershape = :circle, markersize = 6, label = "generators")
+scatter(points, markersize = 6, label = "generators")
+annotate!([(points[n][1] + 0.02, points[n][2] + 0.03, Plots.text(n)) for n in 1:10])
+plot!(tess, legend=:topleft)
 ```
 
 ![](doc/README_tesselation.png_1.png)
 
 
 
-The function `voronoiarea` computes the areas of each Voronoi cell:
+The function `voronoiarea` computes the area of each Voronoi cell:
 
 ```julia
 voronoiarea(tess)
