@@ -1,6 +1,6 @@
-const PointType = Union{VoronoiDelaunay.AbstractPoint2D, GeometryBasics.Point2}
+const PointTypes = Union{VoronoiDelaunay.AbstractPoint2D, GeometryBasics.Point2}
 
-function mean(pts::Vector{T}) where T <: PointType
+function mean(pts::Vector{T}) where T <: PointTypes
 	ax = 0.0
 	ay = 0.0
 
@@ -16,7 +16,7 @@ end
 
 for name in [:sort, :sort!, :issorted, :sortperm]
 	@eval begin
-		function Base.$name(pts::Vector{T}) where T <: PointType
+		function Base.$name(pts::Vector{T}) where T <: PointTypes
 			center = mean(pts)
 			$name(pts, by = p -> p - center, rev = true)
 		end
@@ -25,7 +25,7 @@ end
 
 
 # http://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order
-function Base.isless(p::T, q::T) where T <: PointType
+function Base.isless(p::T, q::T) where T <: PointTypes
 	if getx(p) >= 0.0 && getx(q) < 0.0
 		return true
 	elseif getx(p) < 0.0 && getx(q) >= 0.0
