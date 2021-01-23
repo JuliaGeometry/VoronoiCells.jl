@@ -14,12 +14,14 @@ using Random
         @test isa(pc, VoronoiCells.PointCollection{GeometryBasics.Point2{Float64}})
     end
 
-    @testset "Error making PointCollection from VoronoiDelaunay" begin
+    @testset "PointCollection from VoronoiDelaunay" begin
         Random.seed!(2)
         points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
         rect = Rectangle(VoronoiDelaunay.Point2D(1.1, 1.1), VoronoiDelaunay.Point2D(1.9, 1.9))
 
-        @test_throws MethodError VoronoiCells.PointCollection(points, rect)
+        pc = VoronoiCells.PointCollection(points, rect)
+
+        @test isa(pc, VoronoiCells.PointCollection{VoronoiDelaunay.Point2D})
     end
 
     @testset "Error making PointCollection with mix of VoronoiDelaunay and GeometryBasics" begin
