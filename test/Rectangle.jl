@@ -1,5 +1,6 @@
 using VoronoiCells
 using GeometryBasics
+using Test
 import Random
 
 @testset "Rectangles" begin
@@ -60,7 +61,7 @@ import Random
     
     
     @testset "Error mapping points outside rectangle" begin
-        points = [GeometryBasics.Point2(-1, 0)]
+        points = [GeometryBasics.Point2(-1.0, 0.0)]
     
         from_rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(1, 1))
         to_rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(2, 2))

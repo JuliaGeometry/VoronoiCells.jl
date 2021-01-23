@@ -25,6 +25,9 @@ function Rectangle(p1::GeometryBasics.Point2{T}, p2::GeometryBasics.Point2{T}) w
 end
 
 
+Base.eltype(::Rectangle{T}) where T = T
+
+
 left(rect::Rectangle) = getx(rect.LowerLeft)
 right(rect::Rectangle) = getx(rect.UpperRight)
 lower(rect::Rectangle) = gety(rect.LowerLeft)
@@ -84,7 +87,7 @@ end
 end
 
 
-function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle, to::Rectangle) where T
+function map_to_computation_rectangle(points::Vector{T}, from::Rectangle{T}, to::Rectangle) where T
     offsetx_from = left(from)
     offsety_from = lower(from)
 
@@ -102,8 +105,8 @@ function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle
         end
 
         transformed_points[index] = IndexablePoint2D(
-            offsetx_to + (point[1] - offsetx_from) * slopex,
-            offsety_to + (point[2] - offsety_from) * slopey,
+            offsetx_to + (getx(point) - offsetx_from) * slopex,
+            offsety_to + (gety(point) - offsety_from) * slopey,
             index
         )
     end
@@ -112,7 +115,7 @@ function map_rectangle(points::Vector{GeometryBasics.Point2{T}}, from::Rectangle
 end
 
 
-function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Rectangle)
+function map_rectangle(points::Vector{T}, from::Rectangle{T}, to::Rectangle{S}) where T where S
     offsetx_from = left(from)
     offsety_from = lower(from)
 
@@ -123,41 +126,13 @@ function map_rectangle(points::Vector{IndexablePoint2D}, from::Rectangle, to::Re
     slopey = (upper(to) - lower(to)) / (upper(from) - lower(from))
 
     no_points = length(points)
-    transformed_points = Vector{GeometryBasics.Point2{Float64}}(undef, no_points)
-    for point in points
-        if !isinside(point, from)
-            throw(error("Point is not inside rectangle"))
-        end
-
-        index = getindex(point)
-        transformed_points[index] = GeometryBasics.Point2(
-            offsetx_to + (getx(point) - offsetx_from) * slopex,
-            offsety_to + (gety(point) - offsety_from) * slopey
-        )
-    end
-
-    return transformed_points
-end
-
-
-function map_rectangle(points::Vector{T}, from::Rectangle, to::Rectangle) where T <: VoronoiDelaunay.AbstractPoint2D
-    offsetx_from = left(from)
-    offsety_from = lower(from)
-
-    offsetx_to = left(to)
-    offsety_to = lower(to)
-
-    slopex = (right(to) - left(to)) / (right(from) - left(from))
-    slopey = (upper(to) - lower(to)) / (upper(from) - lower(from))
-
-    no_points = length(points)
-    transformed_points = Vector{GeometryBasics.Point2{Float64}}(undef, no_points)
+    transformed_points = Vector{S}(undef, no_points)
     for (index, point) in enumerate(points)
         if !isinside(point, from)
             throw(error("Point is not inside rectangle"))
         end
 
-        transformed_points[index] = GeometryBasics.Point2(
+        transformed_points[index] = S(
             offsetx_to + (getx(point) - offsetx_from) * slopex,
             offsety_to + (gety(point) - offsety_from) * slopey
         )
