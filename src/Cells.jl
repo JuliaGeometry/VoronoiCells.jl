@@ -15,7 +15,7 @@ function PointCollection(points, rect)
         VoronoiDelaunay.Point2D(1.5 + 1/6, 1.5 + 1/6)
     )
 
-    transformed_points = map_rectangle(points, rect, computation_rect)
+    transformed_points = map_to_computation_rectangle(points, rect, computation_rect)
 
     PointCollection(points, rect, computation_rect, transformed_points, corner_neighbors)
 end
@@ -63,7 +63,7 @@ end
 Base.eltype(::Tessellation{T}) where T = T
 
 
-function voronoicells(pc::PointCollection)
+function voronoicells(pc::PointCollection{T}) where T
     rt = raw_tesselation(pc)
 
     computation_corners = corners(pc.ComputationRectangle)
@@ -75,7 +75,7 @@ function voronoicells(pc::PointCollection)
     end
 
     n_cells = length(rt)
-    cells = [Vector{GeometryBasics.Point2{Float64}}(undef, 0) for _ in 1:n_cells]
+    cells = [Vector{T}(undef, 0) for _ in 1:n_cells]
     for n in 1:n_cells
         cell_corners = unique(rt[n])
 

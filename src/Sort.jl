@@ -1,4 +1,6 @@
-function mean(pts::Vector{GeometryBasics.Point2{T}}) where T
+const PointTypes = Union{VoronoiDelaunay.AbstractPoint2D, GeometryBasics.Point2}
+
+function mean(pts::Vector{T}) where T <: PointTypes
 	ax = 0.0
 	ay = 0.0
 
@@ -8,23 +10,22 @@ function mean(pts::Vector{GeometryBasics.Point2{T}}) where T
 	end
 
 	Np = length(pts)
-	GeometryBasics.Point2(ax/Np, ay/Np)
+	T(ax/Np, ay/Np)
 end
 
 
 for name in [:sort, :sort!, :issorted, :sortperm]
 	@eval begin
-		function Base.$name(pts::Vector{GeometryBasics.Point2{T}}) where T
+		function Base.$name(pts::Vector{T}) where T <: PointTypes
 			center = mean(pts)
-			centralize = p -> p - center
-			$name(pts, by = centralize, rev = true)
+			$name(pts, by = p -> p - center, rev = true)
 		end
 	end
 end
 
 
 # http://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order
-function Base.isless(p::GeometryBasics.Point2, q::GeometryBasics.Point2)
+function Base.isless(p::T, q::T) where T <: PointTypes
 	if getx(p) >= 0.0 && getx(q) < 0.0
 		return true
 	elseif getx(p) < 0.0 && getx(q) >= 0.0
@@ -46,6 +47,6 @@ function Base.isless(p::GeometryBasics.Point2, q::GeometryBasics.Point2)
 
 	# p and q are on the same line from the center; check which one is
 	# closer to the origin
-	origin = GeometryBasics.Point2(0.0, 0.0)
+	origin = T(0.0, 0.0)
 	abs2(p, origin) > abs2(q, origin)
 end
