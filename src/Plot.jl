@@ -7,11 +7,11 @@ function corner_coordinates(tess::Tessellation)
     for cell in tess.Cells
         for corner in cell
             count += 1
-            p[count] = GeometryBasics.Point2(corner)
+            p[count] = GeometryBasics.Point2(getx(corner), gety(corner))
         end
 
         count += 1
-        p[count] = GeometryBasics.Point2(cell[1])
+        p[count] = GeometryBasics.Point2(getx(cell[1]), gety(cell[1]))
         
         count += 1
         p[count] = GeometryBasics.Point2(NaN, NaN)
