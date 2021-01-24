@@ -21,16 +21,17 @@ add VoronoiCells
 
 For specifying 2D points I use the [GeometryBasics package](https://github.com/JuliaGeometry/GeometryBasics.jl).
 Using the [Plots package](https://github.com/JuliaPlots/Plots.jl) we can easily visualize Voronoi tesselations.
+To make this document reproducible, I also used a random point pattern with a fixed seed.
 
 ```julia
 using VoronoiCells
 using GeometryBasics
 using Plots
+using Random
 ```
 
 ```julia; echo = false, results = "hidden"
 pyplot()
-using Random
 ```
 
 First make a vector of points and a rectangle that contains the points:
@@ -53,9 +54,9 @@ The corners of the Voronoi cells of the `n`'th generator is available as `tess.C
 The corners are sorted counter-clockwise.
 
 There is a convenience function for plotting the edges of the Voronoi cells.
-The generators are not added by default, but they can easily be added.
+The generators are not added by default, but they can easily be added afterwards.
 
-```julia; label = "tesselation.png"; out_width = "8cm"; out_height = "8cm"
+```julia; label = "tesselation.png"; fig_height = 4.5; fig_width = 5
 scatter(points, markersize = 6, label = "generators")
 annotate!([(points[n][1] + 0.02, points[n][2] + 0.03, Plots.text(n)) for n in 1:10])
 plot!(tess, legend = :topleft)
@@ -87,7 +88,7 @@ extended_tess = voronoicells(extended_points, rect);
 
 Plotting this tesselation we see that the cells neighboring the corners are affected, namely the cells of points 1, 4, 5, 6, 9.
 
-```julia; label = "tesselation_with_corners"; out_width = "8cm"; out_height = "8cm"
+```julia; label = "tesselation_with_corners.png"; fig_height = 4.5; fig_width = 5
 scatter(points, markersize = 6, label = "generators")
 annotate!([(points[n][1] + 0.02, points[n][2] + 0.03, Plots.text(n)) for n in 1:10])
 plot!(extended_tess, legend = :none)
@@ -96,7 +97,7 @@ plot!(extended_tess, legend = :none)
 *VoronoiCells* circumvents this in the following manner:
 All points are mapped to a rectangle that is a subset of [0, 1] x [0, 1] such that the distance between a corner and its nearest generator(s) is greater than the distance between this generator and its nearest generator neighbor(s).
 This ensures that the Voronoi edges produced by *VoronoiDelaunay* where one generator is a corner point do not overlap the computational rectangle.
-Transforming the edges back to the original rectangle gives a correct Voronoi tesselation here.
+Transforming the edges that do overlap with the computational rectangle back to the original rectangle gives a correct Voronoi tesselation here.
 
 Note that in order to consider point patterns in general rectangles such a mapping has to be applied anyway, so we are not inducing unnecessary computational cost.
 

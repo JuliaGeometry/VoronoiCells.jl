@@ -23,11 +23,13 @@ add VoronoiCells
 
 For specifying 2D points I use the [GeometryBasics package](https://github.com/JuliaGeometry/GeometryBasics.jl).
 Using the [Plots package](https://github.com/JuliaPlots/Plots.jl) we can easily visualize Voronoi tesselations.
+To make this document reproducible, I also used a random point pattern with a fixed seed.
 
 ```julia
 using VoronoiCells
 using GeometryBasics
 using Plots
+using Random
 ```
 
 
@@ -68,6 +70,17 @@ tess.Cells[1]
 ```
 
 ```
+1 = 1
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
 5-element Array{GeometryBasics.Point{2,Float64},1}:
  [0.0, 0.5006658246439761]
  [0.0, 0.2909467571782577]
@@ -85,7 +98,7 @@ The corners of the Voronoi cells of the `n`'th generator is available as `tess.C
 The corners are sorted counter-clockwise.
 
 There is a convenience function for plotting the edges of the Voronoi cells.
-The generators are not added by default, but they can easily be added.
+The generators are not added by default, but they can easily be added afterwards.
 
 ```julia
 scatter(points, markersize = 6, label = "generators")
@@ -139,6 +152,25 @@ extended_points = vcat(points, VoronoiCells.corners(rect))
 extended_tess = voronoicells(extended_points, rect);
 ```
 
+```
+1 = 1
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+3 = 3
+```
+
+
 
 
 
@@ -150,7 +182,7 @@ annotate!([(points[n][1] + 0.02, points[n][2] + 0.03, Plots.text(n)) for n in 1:
 plot!(extended_tess, legend = :none)
 ```
 
-![](doc/README_tesselation_with_corners_1.png)
+![](doc/README_tesselation_with_corners.png_1.png)
 
 
 
