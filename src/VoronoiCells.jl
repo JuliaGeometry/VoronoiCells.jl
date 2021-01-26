@@ -1,27 +1,35 @@
 module VoronoiCells
 
+import GeometryBasics
 import VoronoiDelaunay
-import VoronoiDelaunay: getx, gety, geta, getb, getgena, getgenb
+import VoronoiDelaunay: getx, gety
+
+using RecipesBase
 
 export
-	# Types
-	IndexablePoint2D,
-	Tessellation,
+    Rectangle,
+    Tessellation,
 
-	# Functions
-	voronoicells,
-	voronoiarea,
-	polyarea,
-	clip,
-	density,
-	large2small,
-	small2large
+    left,
+    lower,
+    right,
+    upper,
+    voronoiarea,
+    voronoicells
 
-include("Types.jl")
-include("Area.jl")
+
+include("Points.jl")
+include("Rectangle.jl")
 include("Clipping.jl")
-include("Corners.jl")
-include("Density.jl")
-include("Misc.jl")
+include("Sort.jl")
+include("Cells.jl")
+include("Plot.jl")
+include("Area.jl")
+
+
+const BoundingBox = Rectangle(
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.min_coord, VoronoiDelaunay.min_coord),
+    VoronoiDelaunay.Point2D(VoronoiDelaunay.max_coord, VoronoiDelaunay.max_coord)
+)
 
 end # module

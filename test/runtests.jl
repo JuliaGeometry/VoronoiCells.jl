@@ -1,8 +1,11 @@
 using VoronoiCells
 using Test
 
-include("Voronoiarea.jl")
-include("Polyarea.jl")
-include("Clip.jl")
-include("Density.jl")
 
+include("Points.jl")
+include("Rectangle.jl")
+include("Clipping.jl")
+include("Sort.jl")
+include("Cells.jl")
+include("Area.jl")
+include("Plot.jl")
