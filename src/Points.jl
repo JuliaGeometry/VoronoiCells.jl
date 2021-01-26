@@ -30,7 +30,6 @@ function Base.abs2(A, B)
 end
 
 
-
 function GeometryBasics.Point2(p::VoronoiDelaunay.AbstractPoint2D)
     GeometryBasics.Point(getx(p), gety(p))
 end
