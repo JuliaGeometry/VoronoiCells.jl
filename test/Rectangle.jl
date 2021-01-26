@@ -1,7 +1,8 @@
 using VoronoiCells
 using GeometryBasics
-using Test
 import Random
+using Test
+
 
 @testset "Rectangles" begin
     @testset "Construct Rectangles" begin

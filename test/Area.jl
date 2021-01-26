@@ -1,6 +1,7 @@
 using VoronoiCells
 using GeometryBasics
 import Deldir
+using Test
 
 
 @testset "Area" begin

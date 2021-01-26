@@ -1,5 +1,7 @@
 using VoronoiCells
 using VoronoiDelaunay
+using Test
+
 
 @testset "Clipping" begin
     rect = VoronoiCells.BoundingBox

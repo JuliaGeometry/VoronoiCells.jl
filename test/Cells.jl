@@ -1,6 +1,7 @@
 using VoronoiCells
 using GeometryBasics
 using Random
+using Test
 
 
 @testset "Cells" begin

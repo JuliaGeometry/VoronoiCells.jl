@@ -2,6 +2,7 @@ using VoronoiCells
 using GeometryBasics
 using Test
 
+
 @testset "Plotting" begin
     @testset "Edges for plotting" begin
         points = [Point2(0.25, 0.25), Point2(0.75, 0.25), Point2(0.5, 0.75)]

@@ -1,4 +1,5 @@
 using VoronoiCells
+using Test
 
 
 @testset "Sort points" begin

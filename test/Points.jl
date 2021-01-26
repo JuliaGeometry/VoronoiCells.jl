@@ -1,6 +1,7 @@
 using VoronoiCells
 using GeometryBasics
 import VoronoiDelaunay
+using Test
 
 
 @testset "Points" begin
