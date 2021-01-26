@@ -1,7 +1,7 @@
 VoronoiCells
 ============
 
-[![Build Status](https://travis-ci.org/JuliaGeometry/VoronoiCells.jl.svg?branch=master)](https://travis-ci.org/JuliaGeometry/VoronoiCells.jl)
+[![Build Status](https://github.com/robertdj/VoronoiCells.jl/workflows/CI/badge.svg)](https://github.com/robertdj/VoronoiCells.jl/actions)
 [![codecov.io](https://codecov.io/github/JuliaGeometry/VoronoiCells.jl/coverage.svg?branch=master)](https://codecov.io/github/JuliaGeometry/VoronoiCells.jl?branch=master)
 
 *VoronoiCells* use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices and areas of the Voronoi cells in a tessellation.
