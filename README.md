@@ -70,17 +70,6 @@ tess.Cells[1]
 ```
 
 ```
-1 = 1
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
 5-element Array{GeometryBasics.Point{2,Float64},1}:
  [0.0, 0.5006658246439761]
  [0.0, 0.2909467571782577]
@@ -143,7 +132,7 @@ The current representation of a cell as its corners in a vector is by no means s
 
 ## Corners
 
-For technical reasons the *VoronoiDelaunay* package only works with points in the rectangle [0, 1] x [0, 1] -- here referred to as the computational rectangle.
+For technical reasons the *VoronoiDelaunay* package only works with points in the rectangle [0, 1] x [0, 1] -- here referred to as the VoronoiDelaunay rectangle.
 Furthermore, *VoronoiDelaunay* includes the corner points of the rectangle in the set of generators.
 We can emulate the behavior in *VoronoiCells* by explicitly including the corners:
 
@@ -151,25 +140,6 @@ We can emulate the behavior in *VoronoiCells* by explicitly including the corner
 extended_points = vcat(points, VoronoiCells.corners(rect))
 extended_tess = voronoicells(extended_points, rect);
 ```
-
-```
-1 = 1
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-3 = 3
-```
-
 
 
 
@@ -187,13 +157,23 @@ plot!(extended_tess, legend = :none)
 
 
 *VoronoiCells* circumvents this in the following manner:
-All points are mapped to a rectangle that is a subset of [0, 1] x [0, 1] such that the distance between a corner and its nearest generator(s) is greater than the distance between this generator and its nearest generator neighbor(s).
-This ensures that the Voronoi edges produced by *VoronoiDelaunay* where one generator is a corner point do not overlap the computational rectangle.
-Transforming the edges back to the original rectangle gives a correct Voronoi tesselation here.
+The set of tranformed generators are augmented with the corners of the VoronoiDelaunay rectangle.
+All points in the augmented generators are mapped to a rectangle called the computational rectangle with the following properties:
+
+- It is a subset of the VoronoiDelaunay rectangle
+- The Voronoi cells of the augmented generators belonging to the corners of the VoronoiDelaunay rectangle do not overlap with the computational rectangle.
+
+This does not uniquely define a computational rectangle, but in theory any candidate will suffice.
+The intersection of the computational rectangle and the Voronoi cells of the tranformed original generators are transformed versions of their Voronoi cells in the original rectangle.
+Transforming these cells back to the original rectangle give the desired Voronoi tesselation.
 
 Note that in order to consider point patterns in general rectangles such a mapping has to be applied anyway, so we are not inducing unnecessary computational cost.
 
-A computational rectangles with center in (1.5, 1.5) and sides +/- 1/6 from the center ensures this for *all* point patterns, but the closer the generators are to the corners the larger the computational rectangle can be.
+The closer the generators are to the edges/corners of the original rectangle, the larger the computational rectangle can be.
+In order to avoid additional preprocessing I use a conservative minimal rectangle with corners (1.5 + x, 15 + x), (1.5 - x, 1.5 + x), (1.5 - x, 1.5 - x), (1.5 + x, 1.5 - x) where x = 1/6.
+If we can assume that all quadrants of the original rectangle contains points we can set x = 1/4.
+
+**Reach out if this small rectangle is causing trouble.**
 
 One extra step that *is* necessary is to figure out which Voronoi cell(s) the corners of the rectangle belongs to.
 This is determined by finding the point(s) with the smallest distance to each of the corners.
