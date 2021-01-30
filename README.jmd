@@ -54,7 +54,7 @@ The corners of the Voronoi cells of the `n`'th generator is available as `tess.C
 The corners are sorted counter-clockwise.
 
 There is a convenience function for plotting the edges of the Voronoi cells.
-The generators are not added by default, but they can easily be added afterwards.
+The generators are not added by default, but here I plot them separately.
 
 ```julia; label = "tesselation.png"; fig_height = 4.5; fig_width = 5
 scatter(points, markersize = 6, label = "generators")
@@ -77,7 +77,7 @@ The current representation of a cell as its corners in a vector is by no means s
 
 ## Corners
 
-For technical reasons the *VoronoiDelaunay* package only works with points in the rectangle [0, 1] x [0, 1] -- here referred to as the VoronoiDelaunay rectangle.
+For technical reasons the *VoronoiDelaunay* package only works with points in the rectangle [1, 2] x [1, 2] -- here referred to as the VoronoiDelaunay rectangle.
 Furthermore, *VoronoiDelaunay* includes the corner points of the rectangle in the set of generators.
 We can emulate the behavior in *VoronoiCells* by explicitly including the corners:
 
@@ -105,7 +105,7 @@ This does not uniquely define a computational rectangle, but in theory any candi
 The intersection of the computational rectangle and the Voronoi cells of the tranformed original generators are transformed versions of their Voronoi cells in the original rectangle.
 Transforming these cells back to the original rectangle give the desired Voronoi tesselation.
 
-Note that in order to consider point patterns in general rectangles such a mapping has to be applied anyway, so we are not inducing unnecessary computational cost.
+Note that in order to consider point patterns in general rectangles such a mapping has to be applied anyway, so we are not introducing unnecessary computational cost.
 
 The closer the generators are to the edges/corners of the original rectangle, the larger the computational rectangle can be.
 In order to avoid additional preprocessing I use a conservative minimal rectangle with corners (1.5 + x, 15 + x), (1.5 - x, 1.5 + x), (1.5 - x, 1.5 - x), (1.5 + x, 1.5 - x) where x = 1/6.
