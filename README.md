@@ -65,7 +65,17 @@ points = [Point2(rand(), rand()) for _ in 1:10]
 The main function of *VoronoiCells* is `voronoicells` that computes the cell of each generator point.
 
 ```julia
-tess = voronoicells(points, rect)
+tess = voronoicells(points, rect);
+```
+
+
+
+
+The output `tess` is a struct.
+The corners of the Voronoi cells of the `n`'th generator is available as `tess.Cells[n]`.
+The corners are sorted counter-clockwise.
+
+```julia
 tess.Cells[1]
 ```
 
@@ -82,12 +92,8 @@ tess.Cells[1]
 
 
 
-The output `tess` is a struct.
-The corners of the Voronoi cells of the `n`'th generator is available as `tess.Cells[n]`.
-The corners are sorted counter-clockwise.
-
 There is a convenience function for plotting the edges of the Voronoi cells.
-The generators are not added by default, but here I plot them separately.
+The generators are not added, but here I add them separately.
 
 ```julia
 scatter(points, markersize = 6, label = "generators")
@@ -157,14 +163,14 @@ plot!(extended_tess, legend = :none)
 
 
 *VoronoiCells* circumvents this in the following manner:
-The set of tranformed generators are augmented with the corners of the VoronoiDelaunay rectangle.
+The set of transformed generators are augmented with the corners of the VoronoiDelaunay rectangle.
 All points in the augmented generators are mapped to a rectangle called the computational rectangle with the following properties:
 
-- It is a subset of the VoronoiDelaunay rectangle
+- It is a (non-empty) subset of the VoronoiDelaunay rectangle
 - The Voronoi cells of the augmented generators belonging to the corners of the VoronoiDelaunay rectangle do not overlap with the computational rectangle.
 
 This does not uniquely define a computational rectangle, but in theory any candidate will suffice.
-The intersection of the computational rectangle and the Voronoi cells of the tranformed original generators are transformed versions of their Voronoi cells in the original rectangle.
+The intersection of the computational rectangle and the Voronoi cells of the transformed generators are transformed versions of their Voronoi cells in the original rectangle.
 Transforming these cells back to the original rectangle give the desired Voronoi tesselation.
 
 Note that in order to consider point patterns in general rectangles such a mapping has to be applied anyway, so we are not introducing unnecessary computational cost.
