@@ -13,7 +13,7 @@ struct Rectangle{T}
         end
 
         lower_left = T(left, lower)
-        upper_right = T(upper, right)
+        upper_right = T(right, upper)
 
         new{T}(lower_left, upper_right)
     end
