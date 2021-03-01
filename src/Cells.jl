@@ -89,6 +89,11 @@ function voronoicells(pc::PointCollection{T}) where T
 end
 
 
+"""
+    voronoicells(points, rect) -> Tessellation
+
+Compute the Voronoi cells with the vector of generators `points` in the rectangle `rect`.
+"""
 function voronoicells(points, rect)
     pc = PointCollection(points, rect)
     voronoicells(pc)
