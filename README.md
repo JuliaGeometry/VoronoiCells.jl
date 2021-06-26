@@ -5,7 +5,7 @@ VoronoiCells
 [![codecov.io](https://codecov.io/github/JuliaGeometry/VoronoiCells.jl/coverage.svg?branch=master)](https://codecov.io/github/JuliaGeometry/VoronoiCells.jl?branch=master)
 
 *VoronoiCells* use the [VoronoiDelaunay](https://github.com/JuliaGeometry/VoronoiDelaunay.jl) package to compute the vertices and areas of the Voronoi cells in a tessellation.
-Furhtermore, *VoronoiCells* handles interaction with the specified observation rectangle.
+Furthermore, *VoronoiCells* handles interaction with the specified observation rectangle.
 
 
 # Installation
