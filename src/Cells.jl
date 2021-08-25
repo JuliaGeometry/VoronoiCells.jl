@@ -10,18 +10,18 @@ end
 function PointCollection(points, rect)
     corner_neighbors = corner_nearest_neighbor(points, rect)
 
-    rectwidth = right(rect)-left(rect)
-    rectheight = upper(rect)-lower(rect)
+    rect_width = right(rect) - left(rect)
+    rect_height = upper(rect) - lower(rect)
 
     # Scale height and width such that the maximum is 1
-    m = max(rectwidth, rectheight)
-    scaledwidth = rectwidth/m
-    scaledheight = rectheight/m
+    m = max(rect_width, rect_height)
+    scaled_width = rect_width/m
+    scaled_height = rect_height/m
 
     # Keep aspect ratio of original rectangle in the computation rectangle
     computation_rect = Rectangle(
-        VoronoiDelaunay.Point2D(1.5 - 1/6*scaledwidth, 1.5 - 1/6*scaledheight),
-        VoronoiDelaunay.Point2D(1.5 + 1/6*scaledwidth, 1.5 + 1/6*scaledheight)
+        VoronoiDelaunay.Point2D(1.5 - 1/6*scaled_width, 1.5 - 1/6*scaled_height),
+        VoronoiDelaunay.Point2D(1.5 + 1/6*scaled_width, 1.5 + 1/6*scaled_height)
     )
 
     transformed_points = map_to_computation_rectangle(points, rect, computation_rect)
