@@ -75,8 +75,8 @@ using Test
         rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(1, 1))
 
         @testset "Unique nearest neighbors" begin
-            Random.seed!(1)
-            points = [Point2(rand(), rand()) for _ in 1:5]
+            rng = Random.MersenneTwister(1)
+            points = [Point2(rand(rng), rand(rng)) for _ in 1:5]
 
             corner_neighbors = VoronoiCells.corner_nearest_neighbor(points, rect)
 
