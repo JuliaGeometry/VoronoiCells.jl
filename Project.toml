@@ -13,7 +13,7 @@ Deldir = "1.3"
 GeometryBasics = "0.4"
 RecipesBase = "1.2"
 VoronoiDelaunay = "0.4"
-julia = "1.5"
+julia = "^1.5"
 
 [extras]
 Deldir = "64db5801-a3ae-51a7-b7d2-a0a5f0813e47"
