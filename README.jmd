@@ -34,12 +34,12 @@ using Random
 pyplot()
 ```
 
-First make a vector of points and a rectangle that contains the points:
+First make a vector of points and a rectangle that contains the points (this README was first made when `MersenneTwister` was the default random number generator; I stick with this to make the results reproducible):
 
 ```julia
-Random.seed!(1337)
+rng = Random.MersenneTwister(1337)
 rect = Rectangle(Point2(0, 0), Point2(1, 1))
-points = [Point2(rand(), rand()) for _ in 1:10]
+points = [Point2(rand(rng), rand(rng)) for _ in 1:10]
 ```
 
 The main function of *VoronoiCells* is `voronoicells` that computes the cell of each generator point.
