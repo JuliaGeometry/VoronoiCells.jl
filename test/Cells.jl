@@ -6,8 +6,8 @@ using Test
 
 @testset "Cells" begin
     @testset "PointCollection from GeometryBasics" begin
-        Random.seed!(2)
-        points = [Point2(rand(), rand()) for _ in 1:5]
+        rng = Random.MersenneTwister(2)
+        points = [Point2(rand(rng), rand(rng)) for _ in 1:5]
         rect = Rectangle(Point2(0, 0), Point2(1, 1))
 
         pc = VoronoiCells.PointCollection(points, rect)
@@ -16,8 +16,8 @@ using Test
     end
 
     @testset "PointCollection from VoronoiDelaunay" begin
-        Random.seed!(2)
-        points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
+        rng = Random.MersenneTwister(2)
+        points = [VoronoiDelaunay.Point2D(1 + rand(rng), 1 + rand(rng)) for _ in 1:5]
         rect = Rectangle(VoronoiDelaunay.Point2D(1.1, 1.1), VoronoiDelaunay.Point2D(1.9, 1.9))
 
         pc = VoronoiCells.PointCollection(points, rect)
@@ -26,8 +26,8 @@ using Test
     end
 
     @testset "Error making PointCollection with mix of VoronoiDelaunay and GeometryBasics" begin
-        Random.seed!(2)
-        points = [VoronoiDelaunay.Point2D(1 + rand(), 1 + rand()) for _ in 1:5]
+        rng = Random.MersenneTwister(2)
+        points = [VoronoiDelaunay.Point2D(1 + rand(rng), 1 + rand(rng)) for _ in 1:5]
         rect = Rectangle(Point2(1, 1), Point2(2, 2))
 
         @test_throws MethodError VoronoiCells.PointCollection(points, rect)
@@ -68,8 +68,8 @@ using Test
     end
 
     @testset "Random point set" begin
-        Random.seed!(1)
-        points = [Point2(rand(), rand()) for _ in 1:5]
+        rng = Random.MersenneTwister(1)
+        points = [Point2(rand(rng), rand(rng)) for _ in 1:5]
 
         rect = Rectangle(Point2(0, 0), Point2(1, 1))
 

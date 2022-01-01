@@ -16,7 +16,7 @@ using Test
             @test isa(rect, Rectangle{Point{2, Float64}})
         end
     
-        @testset "Construct with with VoronoiDelaunay points" begin
+        @testset "Construct with VoronoiDelaunay points" begin
             rect = Rectangle(VoronoiDelaunay.Point2D(1.1, 1.1), VoronoiDelaunay.Point2D(1.6, 1.7))
             @test isa(rect, Rectangle{VoronoiDelaunay.Point2D})
         end
@@ -70,12 +70,13 @@ using Test
         @test_throws ErrorException VoronoiCells.map_rectangle(points, from_rect, to_rect)
     end
 
+
     @testset "Find points nearest to each rectangle corner" begin
         rect = Rectangle(GeometryBasics.Point2(0, 0), GeometryBasics.Point2(1, 1))
 
         @testset "Unique nearest neighbors" begin
-            Random.seed!(1)
-            points = [Point2(rand(), rand()) for _ in 1:5]
+            rng = Random.MersenneTwister(1)
+            points = [Point2(rand(rng), rand(rng)) for _ in 1:5]
 
             corner_neighbors = VoronoiCells.corner_nearest_neighbor(points, rect)
 
