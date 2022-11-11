@@ -30,7 +30,7 @@ function PointCollection(points, rect)
 end
 
 
-function raw_tesselation(pc::PointCollection)
+function raw_tesselation(pc::PointCollection; edges=nothing)
     n_points = length(pc.OriginalPoints)
 
     generators = VoronoiDelaunay.DelaunayTessellation2D{IndexablePoint2D}(n_points)
@@ -58,6 +58,17 @@ function raw_tesselation(pc::PointCollection)
         push!(voronoi_cells[generator_b], b)
     end
 
+    if edges !== nothing 
+        for edge in VoronoiDelaunay.delaunayedges(generators)
+            src = VoronoiDelaunay.geta(edge) |> getindex
+            dst = VoronoiDelaunay.getb(edge) |> getindex
+            if src > dst # order 
+                src,dst = dst,src
+            end   
+            push!(edges, (src,dst))
+        end
+    end 
+
     voronoi_cells
 end
 
@@ -72,8 +83,8 @@ end
 Base.eltype(::Tessellation{T}) where T = T
 
 
-function voronoicells(pc::PointCollection{T}) where T
-    rt = raw_tesselation(pc)
+function voronoicells(pc::PointCollection{T}; edges=nothing) where T
+    rt = raw_tesselation(pc; edges)
 
     computation_corners = corners(pc.ComputationRectangle)
     for (corner_index, corner) in enumerate(computation_corners)
@@ -99,22 +110,28 @@ end
 
 
 """
-    voronoicells(points, rect) -> Tessellation
+    voronoicells(points, rect; [edges]) -> Tessellation
 
 Compute the Voronoi cells with the vector of generators `points` in the rectangle `rect`.
+
+The optional `edges` input allows one to record the Delaunay edges of the tesselation. 
+Each edge of the Delaunay graph is pushed onto the edge list using: 
+    `push!(edges, (src,dst))` 
+so the type must be able to support this operation, such as `Vector{Tuple{Int,Int}}()`. 
+This edge set may show additional edges due to boundary effects. 
 """
-function voronoicells(points, rect)
+function voronoicells(points, rect; kwargs...)
     pc = PointCollection(points, rect)
-    voronoicells(pc)
+    voronoicells(pc; kwargs...)
 end
 
 
-function voronoicells(x::Vector, y::Vector, rect)
+function voronoicells(x::Vector, y::Vector, rect; kwargs...)
     n = length(x)
     if n != length(y)
         throw(ArgumentError("x and y must have equal length"))
     end
 
     points = [GeometryBasics.Point2(x[i], y[i]) for i in 1:n]
-    voronoicells(points, rect)
+    voronoicells(points, rect; kwargs...)
 end

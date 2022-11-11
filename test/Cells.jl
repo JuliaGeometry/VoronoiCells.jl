@@ -91,5 +91,29 @@ using Test
              Point2(0.0, 1.0), Point2(0.0, 0.67254), Point2(0.56624, 0.65872), Point2(0.60787, 0.67143), Point2(0.60166, 1.0)
         ] atol = 1e-4
     end
+
+    @testset "Adjacency information" begin
+        rect = Rectangle(Point2(0, 0), Point2(1, 1))
+
+        points = [
+            Point2(0.75, 0.75),
+            Point2(0.25, 0.25),
+            Point2(0.25, 0.75),
+            Point2(0.01, 0.1),
+        ]
+
+        edges = Vector{Tuple{Int,Int}}()
+        tess = voronoicells(points, rect; edges)
+
+        # test sorting 
+        @test all(e->e[1] < e[2], edges)
+        edges = Set(edges)
+        @test (1,2) in edges
+        @test (1,3) in edges
+        @test (2,3) in edges 
+        @test (3,4) in edges
+        @test (2,4) in edges 
+        @test length(edges) == 5 
+    end 
 end
 
