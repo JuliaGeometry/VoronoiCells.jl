@@ -114,6 +114,28 @@ using Test
         @test (3,4) in edges
         @test (2,4) in edges 
         @test length(edges) == 5 
-    end 
+    end
+
+    @testset "Reproducibility" begin
+        rect = Rectangle(Point2(0, 0), Point2(1, 1))
+        rng = Xoshiro(1)
+        points = [Point2(rand(rng), rand(rng)) for _ in 1:10]
+        # without rng passed to voronoicells, cells won't be identical
+        cells1 = voronoicells(points, rect).Cells
+        cells2 = voronoicells(points, rect).Cells
+        same = true
+        for i in eachindex(cells1)
+            same = same && all(cells1[i] .== cells2[i])
+        end
+        @test !same
+        # with rng passed to voronoicells, cells will be identical
+        cells1 = voronoicells(points, rect, rng = Xoshiro(2)).Cells
+        cells2 = voronoicells(points, rect, rng = Xoshiro(2)).Cells
+        same = true
+        for i in eachindex(cells1)
+            same = same && all(cells1[i] .== cells2[i])
+        end
+        @test same
+    end
 end
 
