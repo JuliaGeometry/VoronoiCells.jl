@@ -34,7 +34,7 @@ function raw_tesselation(pc::PointCollection; edges=nothing, rng = Xoshiro())
     n_points = length(pc.OriginalPoints)
 
     generators = VoronoiDelaunay.DelaunayTessellation2D{IndexablePoint2D}(n_points)
-    # Note that the elements of pc.TransformedPoints are reordered by VoronoiDelaunay
+    # Note that, without a seeded RNG, the elements of pc.TransformedPoints are reordered by VoronoiDelaunay
     push!(generators, pc.TransformedPoints, rng)
 
     voronoi_cells = Dict(1:n_points .=> [Vector{VoronoiDelaunay.Point2D}(undef, 0) for _ in 1:n_points])
@@ -65,7 +65,7 @@ function raw_tesselation(pc::PointCollection; edges=nothing, rng = Xoshiro())
             if src > dst # order 
                 src,dst = dst,src
             end   
-            push!(edges, (src,dst), rng)
+            push!(edges, (src,dst))
         end
     end 
 
