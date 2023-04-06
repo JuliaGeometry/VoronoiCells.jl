@@ -3,7 +3,7 @@ module VoronoiCells
 import GeometryBasics
 import VoronoiDelaunay
 import VoronoiDelaunay: getx, gety
-import Random: Xoshiro
+import Random: MersenneTwister
 
 using RecipesBase
 

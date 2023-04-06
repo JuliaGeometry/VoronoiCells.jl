@@ -30,7 +30,7 @@ function PointCollection(points, rect)
 end
 
 
-function raw_tesselation(pc::PointCollection; edges=nothing, rng = Xoshiro())
+function raw_tesselation(pc::PointCollection; edges=nothing, rng = MersenneTwister())
     n_points = length(pc.OriginalPoints)
 
     generators = VoronoiDelaunay.DelaunayTessellation2D{IndexablePoint2D}(n_points)
@@ -83,7 +83,7 @@ end
 Base.eltype(::Tessellation{T}) where T = T
 
 
-function voronoicells(pc::PointCollection{T}; edges=nothing, rng = Xoshiro()) where T
+function voronoicells(pc::PointCollection{T}; edges=nothing, rng = MersenneTwister()) where T
     rt = raw_tesselation(pc; edges, rng)
 
     computation_corners = corners(pc.ComputationRectangle)
