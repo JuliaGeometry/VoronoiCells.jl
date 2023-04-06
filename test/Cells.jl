@@ -114,6 +114,29 @@ using Test
         @test (3,4) in edges
         @test (2,4) in edges 
         @test length(edges) == 5 
-    end 
+    end
+
+    @testset "Reproducibility" begin
+        rect = Rectangle(Point2(0, 0), Point2(1, 1))
+        rng = MersenneTwister(1337)
+        points = [Point2(rand(rng), rand(rng)) for _ in 1:10]
+        # with different rng passed to voronoicells, cells won't be identical
+        # therefore, without seeded RNG, usually also gives different answers
+        cells1 = voronoicells(points, rect, rng = MersenneTwister(2)).Cells
+        cells2 = voronoicells(points, rect, rng = MersenneTwister(3)).Cells
+        same = true
+        for i in eachindex(cells1)
+            same = same && all(cells1[i] .== cells2[i])
+        end
+        @test !same
+        # with rng passed to voronoicells, cells will be identical
+        cells1 = voronoicells(points, rect, rng = MersenneTwister(2)).Cells
+        cells2 = voronoicells(points, rect, rng = MersenneTwister(2)).Cells
+        same = true
+        for i in eachindex(cells1)
+            same = same && all(cells1[i] .== cells2[i])
+        end
+        @test same
+    end
 end
 

@@ -30,12 +30,12 @@ function PointCollection(points, rect)
 end
 
 
-function raw_tesselation(pc::PointCollection; edges=nothing)
+function raw_tesselation(pc::PointCollection; edges=nothing, rng = MersenneTwister())
     n_points = length(pc.OriginalPoints)
 
     generators = VoronoiDelaunay.DelaunayTessellation2D{IndexablePoint2D}(n_points)
-    # Note that the elements of pc.TransformedPoints are reordered by VoronoiDelaunay
-    push!(generators, pc.TransformedPoints)
+    # Note that, without a seeded RNG, the elements of pc.TransformedPoints are reordered by VoronoiDelaunay
+    push!(generators, pc.TransformedPoints, rng)
 
     voronoi_cells = Dict(1:n_points .=> [Vector{VoronoiDelaunay.Point2D}(undef, 0) for _ in 1:n_points])
 
@@ -83,8 +83,8 @@ end
 Base.eltype(::Tessellation{T}) where T = T
 
 
-function voronoicells(pc::PointCollection{T}; edges=nothing) where T
-    rt = raw_tesselation(pc; edges)
+function voronoicells(pc::PointCollection{T}; edges=nothing, rng = MersenneTwister()) where T
+    rt = raw_tesselation(pc; edges, rng)
 
     computation_corners = corners(pc.ComputationRectangle)
     for (corner_index, corner) in enumerate(computation_corners)
